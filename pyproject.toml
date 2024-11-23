@@ -8,7 +8,7 @@ requires-python = ">=3.10"
 license         = {file = "LICENSE"}
 keywords        = []
 authors         = [
-  {name  = "John Grey", email = "jgrey.n.plus.one at gmail.com"},
+  {name  = "John Grey", email = "jgrey.n.plus.one+bibdomain@gmail.com"},
 ]
 classifiers     = [
   "Programming Language :: Python"
