@@ -43,21 +43,12 @@ from sphinx.util.nodes import make_refnode
 
 from sphinx_bib_domain import DOMAIN_NAME
 from .directives import BibEntryDirective
-from .roles import *
+from . import roles, indices
+from .util import anchor, fsig
 
 ##-- logging
 logging = logmod.getLogger(__name__)
 ##-- end logging
-
-
-def log(s, *args):
-    print(s.format(*args), file=stderr)
-
-def fsig(sig) -> str:
-    return f"{DOMAIN_NAME}.{sig}"
-
-def anchor(sig) -> str:
-    return f"{DOMAIN_NAME}-{sig}"
 
 class BibTexDomain(Domain):
     """ Custom Domain for sphixn
@@ -69,15 +60,16 @@ class BibTexDomain(Domain):
     # directives, roles, indices to be registered rather than in setup:
     directives   : dict[str,type[Directive]]          = {'entry'        : BibEntryDirective}
     roles        : dict[str, Role]                    = {'ref'          : XRefRole(),
-                                                         'tag'          : TagRole(),
-                                                         'doi'          : DOIRole(),
-                                                         "author"       : AuthorRole(),
-                                                         "journal"      : JournalRole(),
-                                                         "publisher"    : PublisherRole(),
-                                                         "series"       : SeriesRole(),
-                                                         "institution"  : InstitutionRole(),
+                                                         'tag'          : roles.TagRole(),
+                                                         'doi'          : roles.DOIRole(),
+                                                         "author"       : roles.AuthorRole(),
+                                                         "journal"      : roles.JournalRole(),
+                                                         "publisher"    : roles.PublisherRole(),
+                                                         "series"       : roles.SeriesRole(),
+                                                         "institution"  : roles.InstitutionRole(),
                                                          }
-    indices      : set[type[Index]]                   = {TagIndex, AuthorIndex, PublisherIndex, JournalIndex, InstitutionIndex, SeriesIndex}
+    indices      : set[type[Index]]                   = {indices.TagIndex, indices.AuthorIndex, indices.PublisherIndex,
+                                                         indices.JournalIndex, indices.InstitutionIndex, indices.SeriesIndex}
     data_version                                      = 0
     # initial data to copy to env.domaindata[domain_name]
     initial_data                                   = {

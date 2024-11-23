@@ -41,7 +41,7 @@ from sphinx.util.nodes import make_refnode
 
 # ##-- end 3rd party imports
 
-from sphinx_bib_domain.bib_domain import anchor
+from sphinx_bib_domain.util import anchor
 from sphinx_bib_domain import DOMAIN_NAME
 
 ##-- logging
