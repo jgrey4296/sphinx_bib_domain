@@ -2,7 +2,7 @@
 """
 
 """
-
+# mypy: disable-error-code="import-untyped, import-not-found"
 # Imports:
 from __future__ import annotations
 
@@ -19,11 +19,6 @@ import types
 import weakref
 from collections import defaultdict
 from sys import stderr
-from typing import (TYPE_CHECKING, Any, Callable, ClassVar, Final, Generator,
-                    Generic, Iterable, Iterator, Mapping, Match,
-                    MutableMapping, Protocol, Sequence, Tuple, TypeAlias,
-                    TypeGuard, TypeVar, cast, final, overload,
-                    runtime_checkable)
 from uuid import UUID, uuid1
 from urllib.parse import urlparse
 
@@ -41,15 +36,40 @@ from sphinx.util.nodes import make_refnode
 
 # ##-- end 3rd party imports
 
-from sphinx_bib_domain.util import anchor
-from sphinx_bib_domain import DOMAIN_NAME
+from .. import _interface as API
+
+# ##-- types
+# isort: off
+import abc
+import collections.abc
+from typing import TYPE_CHECKING, cast, assert_type, assert_never
+from typing import Generic, NewType
+# Protocols:
+from typing import Protocol, runtime_checkable
+# Typing Decorators:
+from typing import no_type_check, final, override, overload
+
+if TYPE_CHECKING:
+    from jgdv import Maybe
+    from typing import Final
+    from typing import ClassVar, Any, LiteralString
+    from typing import Never, Self, Literal
+    from typing import TypeGuard
+    from collections.abc import Iterable, Iterator, Callable, Generator
+    from collections.abc import Sequence, Mapping, MutableMapping, Hashable
+
+    from sphinx.util.typing import ExtensionMetadata, OptionSpec
+    type desc_signature = addnodes.desc_signature
+    type Node = nodes.Node
+##--|
+
+# isort: on
+# ##-- end types
 
 ##-- logging
 logging = logmod.getLogger(__name__)
 ##-- end logging
 
-desc_signature = addnodes.desc_signature
-Node = nodes.Node
 
 class BibEntryDirective(ObjectDescription):
     """ Custom Directive for Bibtex Entries.
@@ -59,9 +79,9 @@ class BibEntryDirective(ObjectDescription):
     TODO: legal fields (status, plaintiff, defendant etc)
     """
 
-    has_content        = True
-    required_arguments = 1
-    option_spec        = {
+    has_content        : bool = True
+    required_arguments : int = 1
+    option_spec        : ClassVar[OptionSpec] = {
         'title'       : directives.unchanged_required,
         'year'        : directives.unchanged_required,
         'tags'        : directives.unchanged_required,
@@ -128,7 +148,7 @@ class BibEntryDirective(ObjectDescription):
                     adapted.append(f"| {y}")
 
         # Ensure title and authors are first
-        adapted = [title, authors] + adapted
+        adapted = [title, authors, *adapted]
         # and tags + crossref are last
         if doi:
             adapted.append(doi)
@@ -151,9 +171,9 @@ class BibEntryDirective(ObjectDescription):
 
     def add_target_and_index(self, name_cls, sig, signode):
         """ links the node to the index and back """
-        signode['ids'].append(anchor(sig))
+        signode['ids'].append(API.anchor(sig))
         self.state.document.note_explicit_target(signode)
-        domain = self.env.get_domain(DOMAIN_NAME)
+        domain = self.env.get_domain(API.DOMAIN_NAME)
         domain.add_entry(sig)
         for x,y in self.options.items():
             match x:

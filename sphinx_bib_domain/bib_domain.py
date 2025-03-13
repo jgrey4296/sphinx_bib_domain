@@ -2,7 +2,7 @@
 """
 
 """
-
+# mypy: disable-error-code="import-untyped"
 # Imports:
 from __future__ import annotations
 
@@ -19,11 +19,6 @@ import types
 import weakref
 from collections import defaultdict
 from sys import stderr
-from typing import (TYPE_CHECKING, Any, Callable, ClassVar, Final, Generator,
-                    Generic, Iterable, Iterator, Mapping, Match,
-                    MutableMapping, Protocol, Sequence, Tuple, TypeAlias,
-                    TypeGuard, TypeVar, cast, final, overload,
-                    runtime_checkable)
 from urllib.parse import urlparse
 from uuid import UUID, uuid1
 
@@ -38,13 +33,48 @@ from sphinx.domains import Domain, Index, IndexEntry, ObjType
 from sphinx.domains.std import StandardDomain
 from sphinx.roles import AnyXRefRole, ReferenceRole, XRefRole
 from sphinx.util.nodes import make_refnode
-
 # ##-- end 3rd party imports
 
-from sphinx_bib_domain import DOMAIN_NAME
+from . import _interface as API
 from .directives import BibEntryDirective
 from . import roles, indices
-from .util import anchor, fsig
+
+# ##-- types
+# isort: off
+import abc
+import collections.abc
+from typing import TYPE_CHECKING, cast, assert_type, assert_never
+from typing import Generic, NewType
+# Protocols:
+from typing import Protocol, runtime_checkable
+# Typing Decorators:
+from typing import no_type_check, final, override, overload
+
+if TYPE_CHECKING:
+    from jgdv import Maybe
+    from typing import Final
+    from typing import ClassVar, Any, LiteralString
+    from typing import Never, Self, Literal
+    from typing import TypeGuard
+    from collections.abc import Iterable, Iterator, Callable, Generator
+    from collections.abc import Sequence, Mapping, MutableMapping, Hashable
+
+    from docutils import nodes
+    from docutils.nodes import Element, Node
+    from docutils.parsers.rst import Directive
+    from docutils.parsers.rst.states import Inliner
+    from sphinx.addnodes import pending_xref
+    from sphinx.builders import Builder
+    from sphinx.environment import BuildEnvironment
+    from sphinx.roles import XRefRole
+    from sphinx.util.typing import RoleFunction, TitleGetter
+    type Role      = Any
+
+
+##--|
+
+# isort: on
+# ##-- end types
 
 ##-- logging
 logging = logmod.getLogger(__name__)
@@ -54,46 +84,54 @@ class BibTexDomain(Domain):
     """ Custom Domain for sphixn
     register with app.add_domain(StandardDomain)
     """
-
-    name         : str                                = DOMAIN_NAME
-    label        : str                                = DOMAIN_NAME
+    name         : str                                = API.DOMAIN_NAME
+    label        : str                                = API.DOMAIN_NAME
+    data_version : int                                = 0
     # directives, roles, indices to be registered rather than in setup:
-    directives   : dict[str,type[Directive]]          = {'entry'        : BibEntryDirective}
-    roles        : dict[str, Role]                    = {'ref'          : XRefRole(),
-                                                         'tag'          : roles.TagRole(),
-                                                         'doi'          : roles.DOIRole(),
-                                                         "author"       : roles.AuthorRole(),
-                                                         "journal"      : roles.JournalRole(),
-                                                         "publisher"    : roles.PublisherRole(),
-                                                         "series"       : roles.SeriesRole(),
-                                                         "institution"  : roles.InstitutionRole(),
-                                                         }
-    indices      : set[type[Index]]                   = {indices.TagIndex, indices.AuthorIndex, indices.PublisherIndex,
-                                                         indices.JournalIndex, indices.InstitutionIndex, indices.SeriesIndex}
-    data_version                                      = 0
+    directives      : dict[str,type[Directive]]
+    roles           : dict[str, Role]
+    indices         : set[type[Index]]
+    _last_signature : Maybe[str]
     # initial data to copy to env.domaindata[domain_name]
-    initial_data                                   = {
-        'entries'       : {},
-        'tags'          : defaultdict(list),
-        'authors'       : defaultdict(list),
-        'publishers'    : defaultdict(list),
-        'journals'      : defaultdict(list),
-        'institutions'  : defaultdict(list),
-        'series'        : defaultdict(list),
-    }
-    _static_virtual_names = {}
+    initial_data          : dict[str, dict]
+    _static_virtual_names : ClassVar[dict] = {}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.initial_data = {
+            'entries'       : {},
+            'tags'          : defaultdict(list),
+            'authors'       : defaultdict(list),
+            'publishers'    : defaultdict(list),
+            'journals'      : defaultdict(list),
+            'institutions'  : defaultdict(list),
+            'series'        : defaultdict(list),
+        }
         self._virtual_names = {x.shortname : (f"{self.name}-{x.name}", x.localname) for x in self.indices}
         self._virtual_names.update(self._static_virtual_names)
+
+        # Add any virtual indices to the standard domain:
         StandardDomain._virtual_doc_names.update(self._virtual_names)
-        self._last_signature : None|str = None
+        self._last_signature = None
+
+        # directives, roles, indices to be registered rather than in setup:
+        self.directives   = {'entry'        : BibEntryDirective}
+        self.roles        = {'ref'          : XRefRole(),
+                             'tag'          : roles.TagRole(),
+                             'doi'          : roles.DOIRole(),
+                             "author"       : roles.AuthorRole(),
+                             "journal"      : roles.JournalRole(),
+                             "publisher"    : roles.PublisherRole(),
+                             "series"       : roles.SeriesRole(),
+                             "institution"  : roles.InstitutionRole(),
+                             }
+        self.indices       = {indices.TagIndex, indices.AuthorIndex, indices.PublisherIndex,
+                              indices.JournalIndex, indices.InstitutionIndex, indices.SeriesIndex}
 
     def get_full_qualified_name(self, node) -> str:
-        return fsig(node.arguments[0])
+        return API.fsig(node.arguments[0])
 
-    def get_objects(self) -> iterator[tuple[str, str, str, str, str, int]]:
+    def get_objects(self) -> Iterator[tuple[str, str, str, str, str, int]]:
         yield from self.data['entries'].values()
 
     def resolve_xref(self, env:BuildEnvironment, fromdocname:str, builder:Builder, typ:str, target:str, node:pending_xref, contnode:Element):
@@ -127,13 +165,13 @@ class BibTexDomain(Domain):
                 targ      = "cap-{}".format(target[0].upper())
                 return make_refnode(builder, fromdocname, todocname, targ, contnode, targ)
             case _:
-                log("Found other XRef Type: {} : ({})", typ, target)
+                logging("Found other XRef Type: {} : ({})", typ, target)
 
     def add_entry(self, signature):
         """Add a new entry to the domain."""
-        self._last_signature = fsig(signature)
-        anchor_s             = anchor(signature)
-        # name, dispname, type, docname, anchor, priority
+        self._last_signature = API.fsig(signature)
+        anchor_s             = API.anchor(signature)
+        # name, dispname, type, docname, API.anchor, priority
         self.data['entries'][self._last_signature] = (self._last_signature, signature, self.env.docname,  anchor_s, '', 1)
 
     def link_tags(self, tags:list[str]):
