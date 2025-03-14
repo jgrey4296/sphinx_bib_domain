@@ -1,37 +1,24 @@
 #!/usr/bin/env python3
 """
+TEST File updated
 
 """
-# mypy: disable-error-code="import-untyped,import-not-found"
+# ruff: noqa: ANN201, ARG001, ANN001, ARG002, ANN202, B011
 
-# Imports:
+# Imports
 from __future__ import annotations
 
 # ##-- stdlib imports
-import datetime
-import enum
-import functools as ftz
-import itertools as itz
 import logging as logmod
 import pathlib as pl
-import re
-import time
-import types
-import weakref
-from uuid import UUID, uuid1
-
+import warnings
 # ##-- end stdlib imports
 
 # ##-- 3rd party imports
-from docutils import nodes
-from sphinx.roles import AnyXRefRole, ReferenceRole, XRefRole
-
+import pytest
 # ##-- end 3rd party imports
 
-# ##-- 1st party imports
-from sphinx_bib_domain._interface import DOMAIN_NAME
-
-# ##-- end 1st party imports
+from ..institution import InstitutionIndex
 
 # ##-- types
 # isort: off
@@ -43,6 +30,8 @@ from typing import Generic, NewType
 from typing import Protocol, runtime_checkable
 # Typing Decorators:
 from typing import no_type_check, final, override, overload
+# from dataclasses import InitVar, dataclass, field
+# from pydantic import BaseModel, Field, model_validator, field_validator, ValidationError
 
 if TYPE_CHECKING:
     from jgdv import Maybe
@@ -53,7 +42,6 @@ if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator, Callable, Generator
     from collections.abc import Sequence, Mapping, MutableMapping, Hashable
 
-    from docutils.nodes import Element, Node, TextElement, system_message
 ##--|
 
 # isort: on
@@ -63,16 +51,17 @@ if TYPE_CHECKING:
 logging = logmod.getLogger(__name__)
 ##-- end logging
 
-class PublisherRole(XRefRole):
-    """ A Role for marking publishers and linking to the index """
-    lowercase = True
+# Vars:
 
-    classes   = ['publisher']
-    refdomain = DOMAIN_NAME
-    reftype   = "publisher"
+# Body:
 
-    def run(self) -> tuple[list[Node], list[system_message]]:
-        # log("Tagging: {} in {}", self.title, self.env.docname)
-        nodes, msgs = self.create_xref_node()
-        return nodes, msgs
+class TestInstitutionIndex:
 
+    def test_sanity(self):
+        assert(True is not False) # noqa: PLR0133
+
+    ##--|
+
+    @pytest.mark.skip
+    def test_todo(self):
+        pass

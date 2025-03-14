@@ -29,7 +29,7 @@ from sphinx.roles import AnyXRefRole, ReferenceRole, XRefRole
 # ##-- end 3rd party imports
 
 # ##-- 1st party imports
-from sphinx_bib_domain import DOMAIN_NAME
+from sphinx_bib_domain._interface import DOMAIN_NAME
 
 # ##-- end 1st party imports
 

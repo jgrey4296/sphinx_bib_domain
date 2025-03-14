@@ -39,7 +39,7 @@ from sphinx.util.nodes import make_refnode
 
 # ##-- end 3rd party imports
 
-from sphinx_bib_domain import DOMAIN_NAME
+from sphinx_bib_domain._interface import DOMAIN_NAME
 
 # ##-- types
 # isort: off

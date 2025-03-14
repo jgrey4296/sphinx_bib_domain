@@ -2,7 +2,7 @@
 
 __version__ = "0.0.1"
 
-from .bib_domain import BibTexDomain
 
 def setup(app):
+    from .bib_domain import BibTexDomain
     app.add_domain(BibTexDomain)
