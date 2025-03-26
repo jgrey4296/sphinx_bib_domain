@@ -17,15 +17,19 @@ classifiers     = [
 
 ##-- dependencies
 dependencies   = [
-               "jgdv",
-                "docutils",
-                "sphinx",
-               
+    "docutils>=0.21.2",
+    "jgdv>=1.0.1",
+    "sphinx>=8.2.3",
 ]
 
 [project.optional-dependencies]
-test = [
-  "pytest",
+dev = [
+    "myst-parser>=4.0.1",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.0.0",
+    "pytest-mock>=3.14.0",
+    "sphinx>=8.2.3",
+    "sphinx-rtd-theme>=3.0.2",
 ]
 
 ##-- end dependencies
@@ -202,10 +206,12 @@ incremental         = true
 exclude             = [] # regexs to ignore
 cache_dir           = ".temp/mypy_cache"
 follow_imports      = "skip"
-
 # Per-module options:
 # [[tool.mypy.overrides]]
 # module                = "blah"
 # disallow_untyped_defs = true
 
 ##-- end mypy
+
+[tool.uv.sources]
+jgdv = { path = "../../../../../../../../../../home/john/github/python/jgdv", editable = true }
