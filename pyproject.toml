@@ -58,20 +58,12 @@ changelog     = "https://github.com//sphinx_bib_domain/blob/master/CHANGELOG.md"
 ##-- build-system
 [build-system]
 # frontend: https://pypa-build.readthedocs.io/en/latest/index.html
-# frontend: https://pdm.fming.dev/latest/
 requires = [
          "setuptools >= 63.1.0",
          "wheel >= 0.37.1"
-         # https://flit.pypa.io/en/stable/index.html
-         # "flit_core > 3.2, <4",
-         # https://pdm-backend.fming.dev/
-         # "pdm-backend"
-
 ]
 
 build-backend = "setuptools.build_meta"
-# build-backend = "flit_core.buildapi"
-# build-backend = "pdm.backend"
 
 [tool.setuptools]
 include-package-data = true
