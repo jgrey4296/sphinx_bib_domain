@@ -6,10 +6,10 @@ version         = "0.1.0"
 description     = ""
 readme          = "README.md"
 requires-python = ">=3.12"
-license         = {file = "LICENSE"}
+license-files   = ["LICENSE"]
 keywords        = []
 authors         = [
-  {name  = "John Grey", email = "jgrey.n.plus.one+bibdomain@gmail.com"},
+  {name         = "John Grey", email = "jgrey.n.plus.one+bibdomain@gmail.com"},
 ]
 classifiers     = [
   "Programming Language :: Python"
