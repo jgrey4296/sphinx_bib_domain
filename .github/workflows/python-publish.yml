@@ -35,7 +35,7 @@ jobs:
         pip install build
     - name: Build package
       run: |
-        mkdir .temp/egg-info
+        mkdir --parents .temp/egg-info
         python -m build  
     - name: Store dist packages
       uses: actions/upload-artifact@v4
