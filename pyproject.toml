@@ -72,12 +72,14 @@ include-package-data = true
 namespaces = true
 where      = ["."]
 include    = ["sphinx_bib_domain*"]
+exclude    = ["sphinx_bib_domain._docs*"]
 
 [tool.setuptools.package-data]
 "*" = ["*"]
 "sphinx_bib_domain.__data"    = ["*.so"]
 
 [tool.setuptools.exclude-package-data]
+"sphinx_bib_domain" = ["**.rst"]
 
 [tool.distutils.egg_info]
 # from https://github.com/pypa/setuptools/discussions/3348#discussioncomment-6556887
