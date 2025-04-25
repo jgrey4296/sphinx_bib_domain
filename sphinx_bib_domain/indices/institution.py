@@ -91,13 +91,14 @@ class InstitutionIndex(Index):
 
         for institution, sigs in sorted(self.domain.data['institutions'].items()):
             sigs = sorted(sigs)
+            sig_count = len(sigs)
             letter = institution[0].upper()
-            content[letter].append(IndexEntry(institution, 1, "",  "", "", "", ""))
+            content[letter].append(IndexEntry(f"{institution} ({sig_count})", 1, "",  "", "", "", ""))
             for sig in sigs:
                 if sig not in entries:
                     continue
                 obj = entries[sig]
                 name = obj[0].removeprefix(f"{DOMAIN_NAME}.")
                 content[letter].append(IndexEntry(name, 2, obj[2], obj[3], '', '', ''))
-
-        return sorted(content.items()), collapse
+        else:
+            return sorted(content.items()), collapse

@@ -92,12 +92,13 @@ class AuthorIndex(Index):
         for author, sigs in sorted(self.domain.data['authors'].items()):
             sigs = sorted(sigs)
             letter = author[0].upper()
-            content[letter].append(IndexEntry(author, 1, "",  "", "", "", ""))
+            sig_count = len(sigs)
+            content[letter].append(IndexEntry(f"{author} ({sig_count})", 1, "",  "", "", "", ""))
             for sig in sigs:
                 if sig not in entries:
                     continue
                 obj = entries[sig]
                 name = obj[0].removeprefix(f"{DOMAIN_NAME}.")
                 content[letter].append(IndexEntry(name, 2, obj[2], obj[3], '', '', ''))
-
-        return sorted(content.items()), collapse
+        else:
+            return sorted(content.items()), collapse

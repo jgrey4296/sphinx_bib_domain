@@ -90,9 +90,10 @@ class PublisherIndex(Index):
         entries = self.domain.data['entries']
 
         for pub, sigs in sorted(self.domain.data['publishers'].items()):
-            sigs = sorted(sigs)
-            letter = pub[0].upper()
-            content[letter].append(IndexEntry(pub, 1, "",  "", "", "", ""))
+            sigs      = sorted(sigs)
+            sig_count = len(sigs)
+            letter    = pub[0].upper()
+            content[letter].append(IndexEntry(f"{pub} ({sig_count})", 1, "",  "", "", "", ""))
             for sig in sigs:
                 if sig not in entries:
                     continue
@@ -100,4 +101,5 @@ class PublisherIndex(Index):
                 name = obj[0].removeprefix(f"{DOMAIN_NAME}.")
                 content[letter].append(IndexEntry(name, 2, obj[2], obj[3], '', '', ''))
 
-        return sorted(content.items()), collapse
+        else:
+            return sorted(content.items()), collapse

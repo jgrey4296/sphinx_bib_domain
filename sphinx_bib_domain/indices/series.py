@@ -90,9 +90,10 @@ class SeriesIndex(Index):
         entries = self.domain.data['entries']
 
         for series, sigs in sorted(self.domain.data['series'].items()):
-            sigs = sorted(sigs)
-            letter = series[0].upper()
-            content[letter].append(IndexEntry(series, 1, "",  "", "", "", ""))
+            sigs      = sorted(sigs)
+            sig_count = len(sigs)
+            letter    = series[0].upper()
+            content[letter].append(IndexEntry(f"{series} ({sig_count})", 1, "",  "", "", "", ""))
             for sig in sigs:
                 if sig not in entries:
                     continue
@@ -100,4 +101,5 @@ class SeriesIndex(Index):
                 name = obj[0].removeprefix(f"{DOMAIN_NAME}.")
                 content[letter].append(IndexEntry(name, 2, obj[2], obj[3], '', '', ''))
 
-        return sorted(content.items()), collapse
+        else:
+            return sorted(content.items()), collapse

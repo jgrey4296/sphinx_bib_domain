@@ -143,33 +143,30 @@ class BibTexDomain(Domain):
         typ: cross ref type,
         target: target name
         """
+        first_letter = target[0].upper()
+        cap_target   = "cap-{}".format(target[0].upper())
         match typ:
             case "tag" if target in self.data['tags']:
                 todocname = self._virtual_names["tagindex"][0]
-                targ      = "cap-{}".format(target[0].upper())
-                return make_refnode(builder, fromdocname, todocname, targ, contnode, targ)
+                return make_refnode(builder, fromdocname, todocname, cap_target, contnode, cap_target)
             case "author" if target in self.data['authors']:
                 todocname = self._virtual_names["authorindex"][0]
-                targ      = "cap-{}".format(target[0].upper())
-                return make_refnode(builder, fromdocname, todocname, targ, contnode, targ)
+                return make_refnode(builder, fromdocname, todocname, cap_target, contnode, cap_target)
             case "publisher" if target in self.data['publishers']:
                 todocname = self._virtual_names["pubindex"][0]
-                targ      = "cap-{}".format(target[0].upper())
-                return make_refnode(builder, fromdocname, todocname, targ, contnode, targ)
+                return make_refnode(builder, fromdocname, todocname, cap_target, contnode, cap_target)
             case "journal" if target in self.data['journals']:
                 todocname = self._virtual_names["jourindex"][0]
-                targ      = "cap-{}".format(target[0].upper())
-                return make_refnode(builder, fromdocname, todocname, targ, contnode, targ)
+                return make_refnode(builder, fromdocname, todocname, cap_target, contnode, cap_target)
             case "institution" if target in self.data['institutions']:
                 todocname = self._virtual_names["instindex"][0]
-                targ      = "cap-{}".format(target[0].upper())
-                return make_refnode(builder, fromdocname, todocname, targ, contnode, targ)
+                return make_refnode(builder, fromdocname, todocname, cap_target, contnode, cap_target)
             case "series" if target in self.data['series']:
                 todocname = self._virtual_names["seriesindex"][0]
-                targ      = "cap-{}".format(target[0].upper())
-                return make_refnode(builder, fromdocname, todocname, targ, contnode, targ)
+                return make_refnode(builder, fromdocname, todocname, cap_target, contnode, cap_target)
             case _:
                 logging.debug("Found other XRef Type: {} : ({})", typ, target)
+                return None
 
     def add_entry(self, signature):
         """Add a new entry to the domain."""
@@ -197,22 +194,22 @@ class BibTexDomain(Domain):
         if not self._last_signature:
             return
 
-        self.data['publishers'][publisher].append(self._last_signature)
+        self.data['publishers'][publisher.strip()].append(self._last_signature)
 
     def link_journal(self, journal:str):
         if not self._last_signature:
             return
 
-        self.data['journals'][journal].append(self._last_signature)
+        self.data['journals'][journal.strip()].append(self._last_signature)
 
     def link_institution(self, institution:str):
         if not self._last_signature:
             return
 
-        self.data['institutions'][institution].append(self._last_signature)
+        self.data['institutions'][institution.strip()].append(self._last_signature)
 
     def link_series(self, series:str):
         if not self._last_signature:
             return
 
-        self.data['series'][series].append(self._last_signature)
+        self.data['series'][series.strip()].append(self._last_signature)

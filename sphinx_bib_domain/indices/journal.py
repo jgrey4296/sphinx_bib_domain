@@ -89,15 +89,19 @@ class JournalIndex(Index):
         collapse = True
         entries = self.domain.data['entries']
 
-        for journal, sigs in sorted(self.domain.data['journals'].items()):
-            sigs = sorted(sigs)
-            letter = journal[0].upper()
-            content[letter].append(IndexEntry(journal, 1, "",  "", "", "", ""))
+        for pub, sigs in sorted(self.domain.data['journals'].items()):
+            sigs      = sorted(sigs)
+            sig_count = len(sigs)
+            letter    = pub[0].upper()
+            # For some reason this causes the toggle to disappear:
+            # content[letter].append(IndexEntry(f"{pub} ({sig_count})", 1, "",  "", "", "", ""))
+            content[letter].append(IndexEntry(f"{pub}", 1, "",  "", "", "", f"({sig_count})"))
             for sig in sigs:
                 if sig not in entries:
                     continue
                 obj = entries[sig]
                 name = obj[0].removeprefix(f"{DOMAIN_NAME}.")
                 content[letter].append(IndexEntry(name, 2, obj[2], obj[3], '', '', ''))
+        else:
+            return sorted(content.items()), collapse
 
-        return sorted(content.items()), collapse

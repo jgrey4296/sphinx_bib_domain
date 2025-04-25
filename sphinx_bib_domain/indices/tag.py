@@ -92,7 +92,8 @@ class TagIndex(Index):
             if not bool(sigs):
                 continue
             letter = tag[0].upper()
-            content[letter].append(IndexEntry(tag, 1, "",  "", "", "", ""))
+            sig_count = len(sigs)
+            content[letter].append(IndexEntry(f"{tag} ({sig_count})", 1, "",  "", "", "", ""))
             for sig in sigs:
                 if sig not in entries:
                     continue
@@ -100,4 +101,5 @@ class TagIndex(Index):
                 name = obj[0].removeprefix(f"{DOMAIN_NAME}.")
                 content[letter].append(IndexEntry(name, 2, obj[2], obj[3], '', '', ''))
 
-        return sorted(content.items()), collapse
+        else:
+            return sorted(content.items()), collapse
