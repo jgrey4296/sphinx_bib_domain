@@ -157,9 +157,9 @@ commit             = true
 "docs/conf.py"     = ["^release = '{version}'"]
 "README.md"        = ["^Version : {version}  "]
 "sphinx_bib_domain/__init__.py" = [
-                                         '^__version__\s+=\s+"{version}"',
-                                         # '^__version__\s+:\s+Final\[str\]\s+=\s+"{version}"'
-                                         ]
+    '^__version__\s+=\s+"{version}"',
+    # '^__version__\s+:\s+Final\[str\]\s+=\s+"{version}"'
+]
 
 ##-- end bumpver
 
