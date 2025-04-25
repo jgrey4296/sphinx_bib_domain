@@ -84,49 +84,53 @@ class BibTexDomain(Domain):
     """ Custom Domain for sphixn
     register with app.add_domain(StandardDomain)
     """
-    name         : str                                = API.DOMAIN_NAME
-    label        : str                                = API.DOMAIN_NAME
-    data_version : int                                = 0
+    name                  : str                                = API.DOMAIN_NAME
+    label                 : str                                = API.DOMAIN_NAME
+    data_version          : int                                = 0
     # directives, roles, indices to be registered rather than in setup:
-    directives      : dict[str,type[Directive]]
-    roles           : dict[str, Role]
-    indices         : set[type[Index]]
-    _last_signature : Maybe[str]
+    directives            : dict[str,type[Directive]]
+    roles                 : dict[str, Role]
+    indices               : list[type[Index]]
+    _last_signature       : Maybe[str]
     # initial data to copy to env.domaindata[domain_name]
     initial_data          : dict[str, dict]
-    _static_virtual_names : ClassVar[dict] = {}
+    _virtual_names        : dict[str, tuple[str, str]]
+    _static_virtual_names : ClassVar[dict]       = {}
+
+    _bib_roles            : ClassVar[list[type]] = [ roles.TagRole, roles.DOIRole,
+                                                     roles.AuthorRole, roles.JournalRole,
+                                                     roles.PublisherRole, roles.SeriesRole,
+                                                     roles.InstitutionRole]
+    _bib_indices          : ClassVar[list[type]] = [indices.TagIndex,
+                                                    indices.AuthorIndex, indices.PublisherIndex,
+                                                    indices.JournalIndex, indices.InstitutionIndex,
+                                                    indices.SeriesIndex]
+    initial_data = {
+        'entries'       : {},
+        'tags'          : defaultdict(list),
+        'authors'       : defaultdict(list),
+        'publishers'    : defaultdict(list),
+        'journals'      : defaultdict(list),
+        'institutions'  : defaultdict(list),
+        'series'        : defaultdict(list),
+    }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.initial_data = {
-            'entries'       : {},
-            'tags'          : defaultdict(list),
-            'authors'       : defaultdict(list),
-            'publishers'    : defaultdict(list),
-            'journals'      : defaultdict(list),
-            'institutions'  : defaultdict(list),
-            'series'        : defaultdict(list),
-        }
+
+        self._last_signature = None
+
+        # directives, roles, indices to be registered rather than in setup:
+        self.directives   = {'entry'        : BibEntryDirective}
+        self.indices        = BibTexDomain._bib_indices[:]
+        self.roles        = {'ref'          : XRefRole()}
+        self.roles.update({x.reftype : x() for x in BibTexDomain._bib_roles})
+
         self._virtual_names = {x.shortname : (f"{self.name}-{x.name}", x.localname) for x in self.indices}
         self._virtual_names.update(self._static_virtual_names)
 
         # Add any virtual indices to the standard domain:
         StandardDomain._virtual_doc_names.update(self._virtual_names)
-        self._last_signature = None
-
-        # directives, roles, indices to be registered rather than in setup:
-        self.directives   = {'entry'        : BibEntryDirective}
-        self.roles        = {'ref'          : XRefRole(),
-                             'tag'          : roles.TagRole(),
-                             'doi'          : roles.DOIRole(),
-                             "author"       : roles.AuthorRole(),
-                             "journal"      : roles.JournalRole(),
-                             "publisher"    : roles.PublisherRole(),
-                             "series"       : roles.SeriesRole(),
-                             "institution"  : roles.InstitutionRole(),
-                             }
-        self.indices       = {indices.TagIndex, indices.AuthorIndex, indices.PublisherIndex,
-                              indices.JournalIndex, indices.InstitutionIndex, indices.SeriesIndex}
 
     def get_full_qualified_name(self, node) -> str:
         return API.fsig(node.arguments[0])
@@ -165,7 +169,7 @@ class BibTexDomain(Domain):
                 targ      = "cap-{}".format(target[0].upper())
                 return make_refnode(builder, fromdocname, todocname, targ, contnode, targ)
             case _:
-                logging("Found other XRef Type: {} : ({})", typ, target)
+                logging.debug("Found other XRef Type: {} : ({})", typ, target)
 
     def add_entry(self, signature):
         """Add a new entry to the domain."""
