@@ -14,7 +14,7 @@ import pathlib as pl
 import warnings
 # ##-- end stdlib imports
 
-from ..bib_entry import BibEntryDirective
+from .. import BibEntryDirective
 
 # ##-- 3rd party imports
 import pytest
