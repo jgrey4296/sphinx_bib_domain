@@ -10,8 +10,11 @@ Sphinx Bibtex Domain
 Introduction
 ------------
 
-A `sphinx`_ extension for a `bibtex`_ domain.
+A `sphinx`_ `extension`_ for a `bibtex`_ domain.
 
+Adds an ``entry`` `directive`_ , with accompanying `roles`_,
+which are used to generate indices for ``author``'s ``institution``'s, ``journal``'s,
+``publisher``'s, ``series``, and ``tag``'s.
 
 .. _repo:
 
@@ -43,3 +46,9 @@ If you find a bug, bug me, unsurprisingly, on the `issue tracker <https://github
 .. _sphinx: https://www.sphinx-doc.org/en/master/
 
 .. _bibtex: https://www.bibtex.com
+
+.. _extension: https://www.sphinx-doc.org/en/master/development/index.html
+
+.. _directive: https://www.sphinx-doc.org/en/master/glossary.html#term-directive
+
+.. _roles: https://www.sphinx-doc.org/en/master/glossary.html#term-role

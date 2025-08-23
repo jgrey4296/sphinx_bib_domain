@@ -200,7 +200,7 @@ python_trailing_comma_in_multi_line_signatures  = True
 python_user_unqualified_type_names              = False
 trim_doctest_flags                              = True
 # Remove prefixes for indexiing
-modindex_common_prefix                = ["jgdv."]
+modindex_common_prefix                = ["sphinx_bib_domain."]
 python_maximum_signature_line_length  = None
 
 # ##-- c: Extension Options ----------------------
