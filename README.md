@@ -1,9 +1,7 @@
 # sphinx_bib_domain
 
-Author: John Grey
-Date  : 2024-11-08
-
 ## Overview
 
+A Bibtex domain for sphinx, to add various indices to generated documentation.
 
 ## Examples
