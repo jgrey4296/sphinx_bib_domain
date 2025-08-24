@@ -39,8 +39,7 @@ from sphinx.util.nodes import make_refnode
 
 # ##-- end 3rd party imports
 
-from sphinx.util.logging import getLogger as getSphinxLogger
-from sphinx_bib_domain._interface import DOMAIN_NAME
+from sphinx_bib_domain._interface  import DOMAIN_NAME
 
 # ##-- types
 # isort: off
@@ -71,19 +70,18 @@ if TYPE_CHECKING:
 
 ##-- logging
 logging = logmod.getLogger(__name__)
-sphlog = getSphinxLogger(__name__)
 ##-- end logging
 
 # Vars:
 
 # Body:
 
-class InstitutionIndex(Index):
-    """ A Custom index for sphinx """
+class YearIndex(Index):
+    """ A Custom index for sphinx, covering years"""
 
-    name      = 'institution-index'
-    localname = 'Institution Index'
-    shortname = 'instindex'
+    name      = 'year-index'
+    localname = 'Year Index'
+    shortname = 'yearindex'
 
     def generate(self, docnames=None) -> tuple[Any, bool]:
         """ """
@@ -91,11 +89,13 @@ class InstitutionIndex(Index):
         collapse = True
         entries = self.domain.data['entries']
 
-        for institution, sigs in sorted(self.domain.data['institutions'].items()):
+        raise NotImplementedError()
+
+        for author, sigs in sorted(self.domain.data['authors'].items()):
             sigs = sorted(sigs)
+            letter = author[0].upper()
             sig_count = len(sigs)
-            letter = institution[0].upper()
-            content[letter].append(IndexEntry(f"{institution} ({sig_count})", 1, "",  "", "", "", ""))
+            content[letter].append(IndexEntry(f"{author} ({sig_count})", 1, "",  "", "", "", ""))
             for sig in sigs:
                 if sig not in entries:
                     continue

@@ -35,6 +35,7 @@ from sphinx.roles import AnyXRefRole, ReferenceRole, XRefRole
 from sphinx.util.nodes import make_refnode
 # ##-- end 3rd party imports
 
+from sphinx.util.logging import getLogger as getSphinxLogger
 from . import _interface as API
 from .directives import BibEntryDirective
 from . import roles, indices
@@ -78,6 +79,7 @@ if TYPE_CHECKING:
 
 ##-- logging
 logging = logmod.getLogger(__name__)
+sphlog = getSphinxLogger(__name__)
 ##-- end logging
 
 class BibTexDomain(Domain):
@@ -102,8 +104,10 @@ class BibTexDomain(Domain):
                                                      roles.PublisherRole, roles.SeriesRole,
                                                      roles.InstitutionRole]
     _bib_indices          : ClassVar[list[type]] = [indices.TagIndex,
-                                                    indices.AuthorIndex, indices.PublisherIndex,
-                                                    indices.JournalIndex, indices.InstitutionIndex,
+                                                    indices.AuthorIndex,
+                                                    indices.PublisherIndex,
+                                                    indices.JournalIndex,
+                                                    indices.InstitutionIndex,
                                                     indices.SeriesIndex]
     initial_data = {
         'entries'       : {},
@@ -115,8 +119,8 @@ class BibTexDomain(Domain):
         'series'        : defaultdict(list),
     }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, env:BuildEnvironment) -> None:
+        super().__init__(env)
 
         self._last_signature = None
 
@@ -131,6 +135,13 @@ class BibTexDomain(Domain):
 
         # Add any virtual indices to the standard domain:
         StandardDomain._virtual_doc_names.update(self._virtual_names)
+
+        for x in self._virtual_names:
+            sphlog.info("Bib domain virtual name: %s", x)
+        for x in self.indices:
+            sphlog.info("Bib domain index: %s", x)
+
+        # TODO env.app.add_config_value ?
 
     def get_full_qualified_name(self, node) -> str:
         return API.fsig(node.arguments[0])

@@ -40,8 +40,8 @@ changelog     = "https://github.com//sphinx_bib_domain/blob/master/CHANGELOG.md"
 [project.gui-scripts]
 # spam-gui      = "spam:main_gui"
 
-[project.entry-points."nothing"]
-# tomatoes      = "spam:main_tomatoes"
+[project.entry-points."sphinx.builders"]
+bibhtml = "sphinx_bib_domain.builder.BibDomainHTMLBuilder"
 
 ##-- end scripts
 
