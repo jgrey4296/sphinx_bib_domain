@@ -136,13 +136,6 @@ class BibTexDomain(Domain):
         # Add any virtual indices to the standard domain:
         StandardDomain._virtual_doc_names.update(self._virtual_names)
 
-        for x in self._virtual_names:
-            sphlog.info("Bib domain virtual name: %s", x)
-        for x in self.indices:
-            sphlog.info("Bib domain index: %s", x)
-
-        # TODO env.app.add_config_value ?
-
     def get_full_qualified_name(self, node) -> str:
         return API.fsig(node.arguments[0])
 
@@ -154,73 +147,90 @@ class BibTexDomain(Domain):
         typ: cross ref type,
         target: target name
         """
+        vname_key : str
         first_letter = target[0].upper()
         cap_target   = "cap-{}".format(target[0].upper())
         match typ:
-            case "tag" if target in self.data['tags']:
-                todocname = self._virtual_names["tagindex"][0]
-                return make_refnode(builder, fromdocname, todocname, cap_target, contnode, cap_target)
-            case "author" if target in self.data['authors']:
-                todocname = self._virtual_names["authorindex"][0]
-                return make_refnode(builder, fromdocname, todocname, cap_target, contnode, cap_target)
-            case "publisher" if target in self.data['publishers']:
-                todocname = self._virtual_names["pubindex"][0]
-                return make_refnode(builder, fromdocname, todocname, cap_target, contnode, cap_target)
-            case "journal" if target in self.data['journals']:
-                todocname = self._virtual_names["jourindex"][0]
-                return make_refnode(builder, fromdocname, todocname, cap_target, contnode, cap_target)
-            case "institution" if target in self.data['institutions']:
-                todocname = self._virtual_names["instindex"][0]
-                return make_refnode(builder, fromdocname, todocname, cap_target, contnode, cap_target)
-            case "series" if target in self.data['series']:
-                todocname = self._virtual_names["seriesindex"][0]
-                return make_refnode(builder, fromdocname, todocname, cap_target, contnode, cap_target)
+            case "entry" | "ref":
+                 entry = self.data['entries'][API.fsig(target)]
+                 return make_refnode(builder,
+                                     fromdocname,
+                                     entry[2],
+                                     entry[3],
+                                     contnode,
+                                     entry[3],
+                                     )
+            case "tag":
+                data_key = "tags"
+                vname_key = "tagindex"
+            case "author":
+                data_key = "authors"
+                vname_key = "authorindex"
+            case "publisher":
+                data_key = "publishers"
+                vname_key = "pubindex"
+            case "journal":
+                data_key = "journals"
+                vname_key = "jourindex"
+            case "institution":
+                data_key = "institutions"
+                vname_key = "instindex"
+            case "series":
+                data_key = "series"
+                vname_key = "seriesindex"
             case _:
-                logging.debug("Found other XRef Type: {} : ({})", typ, target)
+                sphlog.info("Found other XRef Type: %s : (%s)", typ, target)
                 return None
+
+        if target not in self.data[data_key]:
+            logging.debug("Failed to find target in data: %s : %s", target, data_key)
+            return None
+
+        to_base = self._virtual_names[vname_key][0]
+        todocname = f"{to_base}-{target[0].upper()}"
+        target_text = f":~:text={target}"
+        return make_refnode(builder, fromdocname, todocname, target_text, contnode, target_text)
 
     def add_entry(self, signature):
         """Add a new entry to the domain."""
         self._last_signature = API.fsig(signature)
         anchor_s             = API.anchor(signature)
         # name, dispname, type, docname, API.anchor, priority
-        self.data['entries'][self._last_signature] = (self._last_signature, signature, self.env.docname,  anchor_s, '', 1)
+        self.data['entries'][self._last_signature] = (
+            self._last_signature,
+            signature,
+            self.env.docname,
+            anchor_s,
+            '',
+            1,
+            )
+
+    def link_data(self, target:str, data:list[str]) -> None:
+        if not self._last_signature:
+            logging.debug("Tried to link data without a signature")
+            return
+
+        assert(target in self.data)
+        sig_s = self._last_signature
+        for val in data:
+            if not bool(val):
+                continue
+            self.data[target][val].append(sig_s)
 
     def link_tags(self, tags:list[str]):
-        if not self._last_signature:
-            return
-
-        sig_s = self._last_signature
-        for tag in tags:
-            self.data['tags'][tag].append(sig_s)
+        self.link_data("tags", tags)
 
     def link_authors(self, authors:list[str]):
-        if not self._last_signature:
-            return
-
-        for author in authors:
-            self.data['authors'][author].append(self._last_signature)
+        self.link_data("authors", authors)
 
     def link_publisher(self, publisher:str):
-        if not self._last_signature:
-            return
-
-        self.data['publishers'][publisher.strip()].append(self._last_signature)
+        self.link_data("publishers", [publisher.strip()])
 
     def link_journal(self, journal:str):
-        if not self._last_signature:
-            return
-
-        self.data['journals'][journal.strip()].append(self._last_signature)
+        self.link_data("journals", [journal.strip()])
 
     def link_institution(self, institution:str):
-        if not self._last_signature:
-            return
-
-        self.data['institutions'][institution.strip()].append(self._last_signature)
+        self.link_data("institutions", [institution.strip()])
 
     def link_series(self, series:str):
-        if not self._last_signature:
-            return
-
-        self.data['series'][series.strip()].append(self._last_signature)
+        self.link_data("series", [series.strip()])

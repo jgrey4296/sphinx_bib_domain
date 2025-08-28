@@ -86,7 +86,6 @@ class BibDomainHTMLBuilder(StandaloneHTMLBuilder):
 
     def write_domain_indices(self) -> None:
         for index_name, index_cls, content, collapse in self.domain_indices:
-            sphlog.info("Starting to Write Domain Index: %s", index_name)
             index_context = {
                 'indextitle'     : index_cls.localname,
                 'content'        : content,
@@ -94,13 +93,14 @@ class BibDomainHTMLBuilder(StandaloneHTMLBuilder):
             }
             logging.info("%s ", index_name, nonl=True)
             if self.config.html_split_index:
+                sphlog.info("Domain Index (split): %s", index_name)
                 self._split_domain_into_subpages(index_name, index_context, "domainindex-split.html", "domainindex-single.html")
             else:
+                sphlog.info("Domain Index: %s", index_name)
                 self.handle_page(index_name, index_context, "domainindex.html")
 
     def _split_domain_into_subpages(self, name:str, context:dict, template_overview:str, template_part:str) -> None:
         """ Adapted from sphinx's write_genidex """
-        sphlog.info("Generating split domain: %s", name)
         context['subpages'] = []
         for (key, entries) in context['content']:
             if not bool(entries):

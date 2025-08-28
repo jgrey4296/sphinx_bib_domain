@@ -59,8 +59,12 @@ logging = logmod.getLogger(__name__)
 ##-- end logging
 
 # Vars:
-DOMAIN_NAME : Final[str] = "bibtex"
-
+DOMAIN_NAME    : Final[str]             = "bibtex"
+TEMPLATES_DIR  : Final[pl.Path]         = pl.Path(__file__).parent / "_templates"
+TEMPLATES      : Final[dict[str, str]]  = {
+    "lib"      : "bib_domain/lib.html.jinja",
+    "entry"    : "bib_domain/entry.html.jinja",
+}
 # Body:
 
 def anchor(sig) -> str:
