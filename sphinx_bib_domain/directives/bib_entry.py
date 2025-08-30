@@ -73,7 +73,6 @@ logging  = logmod.getLogger(__name__)
 sphlog   = getSphinxLogger(__name__)
 ##-- end logging
 
-
 class BibEntryDirective(ObjectDescription):
     """ Custom Directive for Bibtex Entries.
     Note: use 'within' for volume, number, issue, pages.
@@ -114,7 +113,6 @@ class BibEntryDirective(ObjectDescription):
         'no-typesetting'    : directives.flag,
     }
 
-
     def _toc_entry_name(self, sig_node:desc_signature) -> str:
         return ""
 
@@ -150,8 +148,6 @@ class BibEntryDirective(ObjectDescription):
                     domain.link_journal(y)
                 case _:
                     pass
-
-
 
     def before_content(self):
         """ Set the content to be rendered from the options passed in """
@@ -256,7 +252,6 @@ class BibEntryDirective(ObjectDescription):
         for sig in self.get_signatures():
             self.add_target_and_index(sig, sig, signode)
             self.handle_signature(f"({sig})", signode)
-
 
         ##--|
         self.before_content()
