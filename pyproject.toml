@@ -17,6 +17,7 @@ classifiers     = [
 
 ##-- dependencies
 dependencies   = [
+    "bibtex-bibble>=0.3",
     "docutils>=0.21.2",
     "jgdv>=1.0.1",
     "sphinx>=8.2.3",
