@@ -28,9 +28,9 @@ dependencies   = [
 ##-- urls
 [project.urls]
 homepage      = "https://github.com/jgrey4296/sphinx_bib_domain"
-documentation = "https://readthedocs.org/sphinx_bib_domain"
+documentation = "https://sphinx-bib-domain.readthedocs.io"
 repository    = "https://github.com/jgrey4296/sphinx_bib_domain"
-changelog     = "https://github.com//sphinx_bib_domain/blob/master/CHANGELOG.md"
+changelog     = "https://github.com/jgrey4296/sphinx_bib_domain/blob/master/CHANGELOG.md"
 
 ##-- end urls
 
