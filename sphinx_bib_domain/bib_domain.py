@@ -109,7 +109,7 @@ class BibTexDomain(Domain):
                                                     indices.JournalIndex,
                                                     indices.InstitutionIndex,
                                                     indices.SeriesIndex]
-    initial_data = {
+    initial_data : ClassVar[dict] = {
         'entries'       : {},
         'tags'          : defaultdict(list),
         'authors'       : defaultdict(list),

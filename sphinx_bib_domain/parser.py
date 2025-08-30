@@ -25,8 +25,8 @@ import atexit # for @atexit.register
 import faulthandler
 # ##-- end stdlib imports
 
-from docutils.statemachine import StringList
-from sphinx.parsers import RSTParser as SphinxParser
+from docutils.statemachine import StringList # type: ignore[import-untyped]
+from sphinx.parsers import RSTParser as SphinxParser # type: ignore[import-untyped]
 from sphinx.util.logging import getLogger as getSphinxLogger
 import bibble as BM
 import bibble._interface as API
@@ -118,4 +118,4 @@ class BibtexParser(SphinxParser):
         # TODO use write_as_data
         super().parse(rst, document)
         if self.config.bib_domain_entries_to_context:
-            document.raw_lib = lib
+            document.raw_lib = lib # type: ignore[attr-defined]

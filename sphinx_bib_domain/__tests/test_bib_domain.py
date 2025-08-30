@@ -57,11 +57,7 @@ logging = logmod.getLogger(__name__)
 # Vars:
 
 # Body:
-class TestSuite:
-
-    @pytest.fixture(scope="function")
-    def setup(self):
-        pass
+class TestBibDomain:
 
     ##--|
     def test_sanity(self):
