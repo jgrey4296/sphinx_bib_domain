@@ -93,7 +93,7 @@ class BibEntryDirective(ObjectDescription):
         'editor'            : directives.unchanged,
         'journal'           : directives.unchanged,
         'booktitle'         : directives.unchanged,
-        'within'            : directives.unchanged,
+        'within'            : directives.unchanged, # TODO remove this
         "volume"            : directives.unchanged,
         "number"            : directives.unchanged,
         'platform'          : directives.unchanged,
@@ -118,7 +118,7 @@ class BibEntryDirective(ObjectDescription):
     def _toc_entry_name(self, sig_node:desc_signature) -> str:
         return ""
 
-    def handle_signature(self, sig:str, signode:addnodes.desc_signature) -> Node:
+    def handle_signature(self, sig:str, signode:addnodes.desc_signature) -> str:
         """ parses the signature and passes the name and type on """
         if signode['is_multiline']:
                 signode += addnodes.desc_signature_line('', sig)
@@ -223,6 +223,8 @@ class BibEntryDirective(ObjectDescription):
         self.content = "\n".join(adapted)
 
     def run(self) -> list[Node]:
+        result : list[Node]
+        ##--|
         result                     = []
         self.domain, self.objtype  = self.name.split(':', 1)
         self.indexnode             = addnodes.index(entries=[])

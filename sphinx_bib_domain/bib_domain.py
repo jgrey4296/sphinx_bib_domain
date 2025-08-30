@@ -2,7 +2,7 @@
 """
 
 """
-# mypy: disable-error-code="import-untyped"
+# mypy: disable-error-code="import-untyped, attr-defined"
 # Imports:
 from __future__ import annotations
 
@@ -95,8 +95,8 @@ class BibTexDomain(Domain):
     indices               : list[type[Index]]
     _last_signature       : Maybe[str]
     # initial data to copy to env.domaindata[domain_name]
-    initial_data          : dict[str, dict]
     _virtual_names        : dict[str, tuple[str, str]]
+    ##--|
     _static_virtual_names : ClassVar[dict]       = {}
 
     _bib_roles            : ClassVar[list[type]] = [ roles.TagRole, roles.DOIRole,
@@ -109,7 +109,7 @@ class BibTexDomain(Domain):
                                                     indices.JournalIndex,
                                                     indices.InstitutionIndex,
                                                     indices.SeriesIndex]
-    initial_data : ClassVar[dict] = {
+    initial_data : ClassVar[dict[str, dict]] = {
         'entries'       : {},
         'tags'          : defaultdict(list),
         'authors'       : defaultdict(list),
@@ -137,7 +137,7 @@ class BibTexDomain(Domain):
         StandardDomain._virtual_doc_names.update(self._virtual_names)
 
     def get_full_qualified_name(self, node) -> str:
-        return API.fsig(node.arguments[0])
+        return cast("str", API.fsig(node.arguments[0]))
 
     def get_objects(self) -> Iterator[tuple[str, str, str, str, str, int]]:
         yield from self.data['entries'].values()

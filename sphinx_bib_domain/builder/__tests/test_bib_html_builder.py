@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-TEST File updated
+
 
 """
 # ruff: noqa: ANN201, ARG001, ANN001, ARG002, ANN202, B011
@@ -20,35 +20,36 @@ import pytest
 
 
 ##--|
-from ..bib_domain import BibTexDomain
+from .. import BibDomainHTMLBuilder
 ##--|
 
 # ##-- types
 # isort: off
+# General
 import abc
 import collections.abc
-from typing import TYPE_CHECKING, cast, assert_type, assert_never
-from typing import Generic, NewType
-# Protocols:
-from typing import Protocol, runtime_checkable
-# Typing Decorators:
+import typing
+import types
+from typing import cast, assert_type, assert_never
+from typing import Generic, NewType, Never
 from typing import no_type_check, final, override, overload
-# from dataclasses import InitVar, dataclass, field
-# from pydantic import BaseModel, Field, model_validator, field_validator, ValidationError
+# Protocols and Interfaces:
+from typing import Protocol, runtime_checkable
+# isort: on
+# ##-- end types
 
-if TYPE_CHECKING:
-    from jgdv import Maybe
-    from typing import Final
-    from typing import ClassVar, Any, LiteralString
-    from typing import Never, Self, Literal
+# ##-- type checking
+# isort: off
+if typing.TYPE_CHECKING:
+    from typing import Final, ClassVar, Any, Self
+    from typing import Literal, LiteralString
     from typing import TypeGuard
     from collections.abc import Iterable, Iterator, Callable, Generator
     from collections.abc import Sequence, Mapping, MutableMapping, Hashable
 
-##--|
-
-# isort: on
-# ##-- end types
+    from jgdv import Maybe
+## isort: on
+# ##-- end type checking
 
 ##-- logging
 logging = logmod.getLogger(__name__)
@@ -57,10 +58,10 @@ logging = logmod.getLogger(__name__)
 # Vars:
 
 # Body:
-class TestBibDomain:
+class TestBibHtmlBuilder:
 
     def test_sanity(self):
-        assert(True is not False) # noqa: PLR0133
+        assert(True is not False)
 
     ##--|
     @pytest.mark.skip

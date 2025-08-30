@@ -31,7 +31,8 @@ def bib_collect_pages(app) -> Iterable:
 def bib_page_context(app, page, template, context, doctree) -> Maybe[str]:
     """ Modify context and use custom templates for bib documents """
     domain      = app.env.get_domain(API.DOMAIN_NAME)
-    bib_doc     = 'page_source_suffix' in context and context['page_source_suffix'] == ".bib"
+    bib_doc     = ('page_source_suffix' in context
+                   and context['page_source_suffix'] == ".bib")
     bib_context = app.config.bib_domain_entries_to_context
 
     match bib_doc, bib_context:
@@ -55,7 +56,6 @@ def setup(app):
 
     ## Config values:
     # absolute or relative to templates_path
-    app.add_config_value("bib_domain_root", "main", "html", [str|pl.Path])
-    app.add_config_value("bib_domain_out", ".temp/export/rst", "html", [str|pl.Path])
-    app.add_config_value("bib_domain_entries_to_context", False, bool)
+    app.add_config_value("bib_domain_split_index", True, "html", bool)
+    app.add_config_value("bib_domain_entries_to_context", False, "html", bool)
     app.add_config_value("bib_domain_templates", API.TEMPLATES_DIR, pl.Path)

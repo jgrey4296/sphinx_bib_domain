@@ -28,7 +28,6 @@ import faulthandler
 # ##-- end stdlib imports
 
 import jinja2.exceptions
-import contextlib
 import os
 import html
 from sphinx.util.osutil import relative_uri
@@ -91,8 +90,8 @@ class BibDomainHTMLBuilder(StandaloneHTMLBuilder):
                 'content'        : content,
                 'collapse_index' : collapse,
             }
-            logging.info("%s ", index_name, nonl=True)
-            if self.config.html_split_index:
+            logging.info("%s ", index_name)
+            if self.config.bib_domain_split_index:
                 sphlog.info("Domain Index (split): %s", index_name)
                 self._split_domain_into_subpages(index_name, index_context, "domainindex-split.html", "domainindex-single.html")
             else:

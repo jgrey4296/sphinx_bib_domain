@@ -67,8 +67,8 @@ TEMPLATES      : Final[dict[str, str]]  = {
 }
 # Body:
 
-def anchor(sig) -> str:
+def anchor(sig:str) -> str:
     return f"{DOMAIN_NAME}-{sig}"
 
-def fsig(sig) -> str:
+def fsig(sig:str) -> str:
     return f"{DOMAIN_NAME}.{sig}"
