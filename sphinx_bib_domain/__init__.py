@@ -42,7 +42,7 @@ def bib_page_context(app, page, template, context, doctree) -> Maybe[str]:
         case True, False:
             return API.TEMPLATES["lib"]
         case _:
-            return
+            return None
 
 def setup(app):
     # app.connect("html-page-context", bib_page_context)

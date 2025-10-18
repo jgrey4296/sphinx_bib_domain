@@ -99,11 +99,11 @@ class BibTexDomain(Domain):
     ##--|
     _static_virtual_names : ClassVar[dict]       = {}
 
-    _bib_roles            : ClassVar[list[type]] = [ roles.TagRole, roles.DOIRole,
+    _new_roles            : ClassVar[list[type]] = [ roles.TagRole, roles.DOIRole,
                                                      roles.AuthorRole, roles.JournalRole,
                                                      roles.PublisherRole, roles.SeriesRole,
                                                      roles.InstitutionRole]
-    _bib_indices          : ClassVar[list[type]] = [indices.TagIndex,
+    _new_indices          : ClassVar[list[type]] = [indices.TagIndex,
                                                     indices.AuthorIndex,
                                                     indices.PublisherIndex,
                                                     indices.JournalIndex,
@@ -126,9 +126,9 @@ class BibTexDomain(Domain):
 
         # directives, roles, indices to be registered rather than in setup:
         self.directives   = {'entry'        : BibEntryDirective}
-        self.indices        = BibTexDomain._bib_indices[:]
+        self.indices        = BibTexDomain._new_indices[:]
         self.roles        = {'ref'          : XRefRole()}
-        self.roles.update({x.reftype : x() for x in BibTexDomain._bib_roles})
+        self.roles.update({x.reftype : x() for x in BibTexDomain._new_roles})
 
         self._virtual_names = {x.shortname : (f"{self.name}-{x.name}", x.localname) for x in self.indices}
         self._virtual_names.update(self._static_virtual_names)
@@ -136,12 +136,15 @@ class BibTexDomain(Domain):
         # Add any virtual indices to the standard domain:
         StandardDomain._virtual_doc_names.update(self._virtual_names)
 
+    @override
     def get_full_qualified_name(self, node) -> str:
         return cast("str", API.fsig(node.arguments[0]))
 
+    @override
     def get_objects(self) -> Iterator[tuple[str, str, str, str, str, int]]:
         yield from self.data['entries'].values()
 
+    @override
     def resolve_xref(self, env:BuildEnvironment, fromdocname:str, builder:Builder, typ:str, target:str, node:pending_xref, contnode:Element):
         """
         typ: cross ref type,

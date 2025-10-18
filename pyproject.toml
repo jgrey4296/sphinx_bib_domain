@@ -92,64 +92,6 @@ log_file_format = "%(asctime)s %(levelname)s %(name)s : %(message)s"
 
 ##-- end pytest
 
-##-- sphinx
-[tool.sphinx]
-author     = "John Grey"
-copyright  = "2024-11-08"
-extensions = ['sphinx.ext.doctest', 'sphinx.ext.autodoc', 'sphinx.ext.autosummary', 'sphinx.ext.napoleon']
-templates  = ['_templates']
-exclude    = ['**/flycheck_*.py']
-
-[tool.sphinx.autosummary]
-generate = true
-
-[tool.sphinx.autodoc]
-add_module_names   = false
-inherit_docstrings = true
-
-[tool.sphinx.autodoc.defaults]
-members           = true
-undoc-members     = true
-private-members   = false
-special-members   = false
-inherited-members = true
-show-inheritance  = true
-
-[tool.sphinx.html]
-theme       = 'alabaster'
-static      = ['_static']
-
-[tool.sphinx.html.options]
-
-##-- end sphinx
-
-##-- bumpver
-[tool.bumpver]
-current_version    = "0.1.0"
-version_pattern    = "MAJOR.MINOR.PATCH"
-commit_message     = "[bump]: version {old_version} -> {new_version}"
-tag_message        = "{new_version}"
-tag_scope          = "default"
-commit             = true
-# tag                = true
-# push             = true
-# pre_commit_hook  = ""
-# post_commit_hook = ""
-
-[tool.bumpver.file_patterns]
-"pyproject.toml"   = [
-                   '^version\s+=\s+"{version}"',
-                   '^current_version\s+=\s+"{version}"'
-]
-"docs/conf.py"     = ["^release = '{version}'"]
-"README.md"        = ["^Version : {version}  "]
-"sphinx_bib_domain/__init__.py" = [
-    '^__version__\s+=\s+"{version}"',
-    # '^__version__\s+:\s+Final\[str\]\s+=\s+"{version}"'
-]
-
-##-- end bumpver
-
 ##-- isort
 # https://pycqa.github.io/isort/docs/configuration/options.html
 [tool.isort]

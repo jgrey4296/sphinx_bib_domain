@@ -89,6 +89,7 @@ class BibtexParser(SphinxParser):
             "footer"  : "bib_domain/footer.rst.jinja",
         }
 
+    @override
     def set_application(self, app) -> None:
         super().set_application(app)
         self.writer = JinjaWriter(self._stack,
