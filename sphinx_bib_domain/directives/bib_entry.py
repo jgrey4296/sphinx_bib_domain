@@ -135,9 +135,9 @@ class BibEntryDirective(ObjectDescription):
             match x:
                 case "author" | "editor":
                     # TODO handle '{x and y}'
-                    domain.link_authors([x.strip() for x in y.split(" | ")])
+                    domain.link_authors([a.strip() for a in y.split(" | ")])
                 case "tags":
-                    domain.link_tags([x.strip() for x in self.options['tags'].split(",")])
+                    domain.link_tags([x.strip() for x in y.split(",")])
                 case "publisher":
                     domain.link_publisher(y)
                 case "institution":
