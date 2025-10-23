@@ -24,6 +24,7 @@ dependencies   = [
 ]
 
 [tool.uv.sources]
+bibtex-bibble = { git = "https://github.com/jgrey4296/bibble" }
 
 [dependency-groups]
 dev = [

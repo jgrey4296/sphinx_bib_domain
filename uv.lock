@@ -58,8 +58,8 @@ wheels = [
 
 [[package]]
 name = "bibtex-bibble"
-version = "0.3.1"
-source = { registry = "https://pypi.org/simple" }
+version = "0.3.3"
+source = { git = "https://github.com/jgrey4296/bibble#b5b6a442986fe2f2c6d4a5757562754cfac2757a" }
 dependencies = [
     { name = "bibtexparser" },
     { name = "internetarchive" },
@@ -71,10 +71,6 @@ dependencies = [
     { name = "selenium" },
     { name = "tqdm" },
     { name = "waybackpy" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b9/b0/a21a736e027572322dee8fdb7ef74cd2cb9befdfa67f1891b1439fc5c587/bibtex_bibble-0.3.1.tar.gz", hash = "sha256:5a12f454973d39242b1a8f745fccabafb72613884741c3b64607ca96a2fdecbd", size = 42894, upload-time = "2025-08-30T01:02:52.296Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/68/d3/9818736890cb37fb09bf5746d1b3554538932be479a1ca299f445244a071/bibtex_bibble-0.3.1-py3-none-any.whl", hash = "sha256:4e4f8f79a4507fad2537ff0641260377e4f3f0ff0112f83e822163d3fcdece25", size = 91185, upload-time = "2025-08-30T01:02:50.832Z" },
 ]
 
 [[package]]
@@ -1141,7 +1137,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bibtex-bibble", specifier = ">=0.3.1" },
+    { name = "bibtex-bibble", git = "https://github.com/jgrey4296/bibble" },
     { name = "docutils", specifier = ">=0.21.2" },
     { name = "jgdv", specifier = ">=1.0.1" },
     { name = "sphinx", specifier = ">=8.2.3" },
