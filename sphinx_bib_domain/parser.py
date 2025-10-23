@@ -28,6 +28,7 @@ import faulthandler
 from docutils.statemachine import StringList # type: ignore[import-untyped]
 from sphinx.parsers import RSTParser as SphinxParser # type: ignore[import-untyped]
 from sphinx.util.logging import getLogger as getSphinxLogger
+from sphinx_bib_domain._interface import TEMPLATES_DIR
 import bibble as BM
 import bibble._interface as API
 from bibble.io import JinjaWriter, Reader
@@ -93,7 +94,7 @@ class BibtexParser(SphinxParser):
     def set_application(self, app) -> None:
         super().set_application(app)
         self.writer = JinjaWriter(self._stack,
-                                  templates=self.config.bib_domain_templates)
+                                  templates=[self.config.bib_domain_templates, TEMPLATES_DIR])
         self.writer.update_templates(self._templates)
 
     def build_stack(self) -> API.PairStack_p:
