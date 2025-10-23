@@ -23,6 +23,34 @@ dependencies   = [
     "sphinx>=8.2.3",
 ]
 
+[tool.uv.sources]
+
+[dependency-groups]
+dev = [
+    "ipython>=9.4.0",
+    "mypy>=1.17.1",
+    "sh>=2.2.2",
+    "towncrier>=24.8.0",
+    "types-docutils>=0.22.0.20250822",
+]
+test =[
+    "pydot>=4.0.1",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.0.0",
+    "pytest-mock>=3.14.0",
+    "tox>=4.28.4",
+    "tox-uv>=1.27.0",
+    "ruff>=0.12.8",
+]
+docs = [
+    "myst-parser>=4.0.1",
+    "sphinx>=8.2.3",
+    "sphinx-autoapi>=3.6.0",
+    "sphinx-rtd-theme>=3.0.2",
+    "pydot>=4.0.1",
+    "tox>=4.28.4",
+    "tox-uv>=1.27.0",
+]
 ##-- end dependencies
 
 ##-- urls
@@ -142,31 +170,3 @@ ignore_missing_imports = false
 
 ##-- end mypy
 
-[tool.uv.sources]
-
-[dependency-groups]
-dev = [
-    "ipython>=9.4.0",
-    "mypy>=1.17.1",
-    "sh>=2.2.2",
-    "towncrier>=24.8.0",
-    "types-docutils>=0.22.0.20250822",
-]
-test =[
-    "pydot>=4.0.1",
-    "pytest>=8.3.5",
-    "pytest-cov>=6.0.0",
-    "pytest-mock>=3.14.0",
-    "tox>=4.28.4",
-    "tox-uv>=1.27.0",
-    "ruff>=0.12.8",
-]
-docs = [
-    "myst-parser>=4.0.1",
-    "sphinx>=8.2.3",
-    "sphinx-autoapi>=3.6.0",
-    "sphinx-rtd-theme>=3.0.2",
-    "pydot>=4.0.1",
-    "tox>=4.28.4",
-    "tox-uv>=1.27.0",
-]
