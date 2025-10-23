@@ -6,7 +6,7 @@
 {% for key,val in entry|items %}
 {%   if key == "author" or key == "editor" %}
   {{ (':' ~ key ~ ':  ' ~ val.value|join(" | ")) }}
-{%   elif key in roles %}
+{%   elif key in roles and val.value is ne("") %}
   {{ (':' ~ key ~ ':  ' ~ val.value) }}
 {%   endif %}
 {% endfor %}
