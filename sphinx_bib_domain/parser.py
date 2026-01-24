@@ -68,6 +68,20 @@ sphlog = getSphinxLogger(__name__)
 ##-- end logging
 
 # Vars:
+DEFAULT_TEMPLATES             : Final[dict] = {
+    "lib"                    : "bib_domain/lib.rst.jinja",
+    "header"                 : "bib_domain/header.rst.jinja",
+    "entry"                  : "bib_domain/entry.rst.jinja",
+    "footer"                 : "bib_domain/footer.rst.jinja",
+    "preamble"               : "bib_domain/preamble.rst.jinja",
+    "string"                 : "bib_domain/string.rst.jinja",
+    "impl_comment"           : "bib_domain/impl_comment.rst.jinja",
+    "expl_comment"           : "bib_domain/expl_comment.rst.jinja",
+    "failed_block"           : "bib_domain/failed_block.rst.jinja",
+    "meta_block"             : "bib_domain/meta_block.rst.jinja",
+    "middleware_error_block" : "bib_domain/middleware_error_block.rst.jinja",
+    "parsing_failed_block"   : "bib_domain/parsing_failed_block.rst.jinja",
+}
 # Body:
 
 class BibtexParser(SphinxParser):
@@ -83,18 +97,18 @@ class BibtexParser(SphinxParser):
         super().__init__(*args, **kwargs)
         self._stack = self.build_stack()
         self.reader = Reader(self._stack)
-        self._templates = {
-            "lib"     : "bib_domain/lib.rst.jinja",
-            "header"  : "bib_domain/header.rst.jinja",
-            "entry"   : "bib_domain/entry.rst.jinja",
-            "footer"  : "bib_domain/footer.rst.jinja",
-        }
+        self._templates = {}
+        self._templates.update(DEFAULT_TEMPLATES)
+
 
     @override
     def set_application(self, app) -> None:
         super().set_application(app)
+        template_dirs = [pl.Path(x) for x in self.config.templates_path]
+        template_dirs.append(TEMPLATES_DIR)
         self.writer = JinjaWriter(self._stack,
-                                  templates=[self.config.bib_domain_templates, TEMPLATES_DIR])
+                                  templates=template_dirs,
+                                  )
         self.writer.update_templates(self._templates)
 
     def build_stack(self) -> API.PairStack_p:
