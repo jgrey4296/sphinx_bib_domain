@@ -17,20 +17,20 @@ build:
     pre_create_environment:
       - mkdir -p .temp
       - asdf plugin add direnv
-      - asdf install direnv
+      - asdf plugin add uv
+      - asdf install
       - direnv allow
     create_environment:
       - direnv exec . uv venv
     install:
-      - direnv exec . uv sync --group docs 
+      - direnv exec . uv sync --group docs
     build:
       html:
         - echo "Building HTML"
         - >
-          { direnv allow; 
+          { direnv allow;
           direnv exec .
           polyglot docs --sphinx;
           }
         - mkdir -p "$READTHEDOCS_OUTPUT/html"
         - mv .temp/docs/sphinx/* "$READTHEDOCS_OUTPUT/html"
-        
