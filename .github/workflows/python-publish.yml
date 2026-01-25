@@ -15,7 +15,7 @@ on:
   release:
     types: [published]
 
-    
+
 permissions:
   contents: read
 
@@ -31,6 +31,7 @@ jobs:
       - name: setup polyglot
         run: |
           asdf plugin add direnv
+          asdf plugin add uv
           asdf install
           direnv allow
           direnv export gha >> "$GITHUB_ENV"
@@ -54,7 +55,7 @@ jobs:
     needs:
       - build
     runs-on: ubuntu-latest
-    environment: 
+    environment:
       name: publishing
       url: https:://pypi.org/p/jgdv
     permissions:
@@ -67,4 +68,3 @@ jobs:
           path: dist/
       - name: push
         uses: pypa/gh-action-pypi-publish@release/v1
-      
