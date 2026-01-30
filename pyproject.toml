@@ -17,14 +17,13 @@ classifiers     = [
 
 ##-- dependencies
 dependencies   = [
-    "bibtex-bibble>=0.3.1",
+    "bibtex-bibble>=0.4.0",
     "docutils>=0.21.2",
     "jgdv>=1.0.1",
     "sphinx>=8.2.3",
 ]
 
 [tool.uv.sources]
-bibtex-bibble = { git = "https://github.com/jgrey4296/bibble" }
 
 [dependency-groups]
 dev = [
@@ -170,4 +169,3 @@ ignore_missing_imports = false
 # disallow_untyped_defs = true
 
 ##-- end mypy
-
