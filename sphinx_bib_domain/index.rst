@@ -30,9 +30,9 @@ To install, run ``uv add --prerelease=allowed sphinx_bib_domain`` and sync
 Then, in your ``conf.py``:
 
 .. code:: python
- 
+
    extensions =  ["sphinx_bib_domain"]
-          
+
    # To enable .bib file parsing:
    source_suffix = {".bib": "bibtex"}
    # To enable split domain-specific indices:
@@ -47,7 +47,7 @@ By calling ``sphinx-build --builder bibhtml``,
 the :class:`~sphinx_bib_domain.builder.bib_html_builder.BibDomainHTMLBuilder`
 will be called to run the build.
 With ``bib_domain_split_index = True`` in the `conf.py` file, all domain-specific indices (eg: this bib domain)
-will be built in a similar way to the standard split index of sphinx. 
+will be built in a similar way to the standard split index of sphinx.
 
 --------------------------
 The Bibtex Entry Directive
@@ -63,11 +63,17 @@ This is the main piece of this package.
       :year: 2025
       :tags: example,bibtex
       :url: https://somewhere.com
-            
-         
+
+
 This will be handled by the :class:`~sphinx_bib_domain.directives.bib_entry.BibEntryDirective`,
 producing a description of the entry in a similar format to how sphinx
 documents python code.
+
+----------
+Templating
+----------
+
+TODO
 
 
 ------------
@@ -94,14 +100,14 @@ If you find a bug, bug me, unsurprisingly, on the `issue tracker <https://github
    :maxdepth: 3
    :glob:
    :hidden:
-      
+
    [a-z]*/index
 
    _docs/*
    genindex
    modindex
    API Reference <_docs/_autoapi/sphinx_bib_domain/index>
-   
+
 
 .. .. Links
 

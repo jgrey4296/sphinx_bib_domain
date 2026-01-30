@@ -30,7 +30,7 @@ build:
         - >
           { direnv allow;
           direnv exec .
-          polyglot docs --sphinx;
+          polyglot task docs;
           }
         - mkdir -p "$READTHEDOCS_OUTPUT/html"
         - mv .temp/docs/sphinx/* "$READTHEDOCS_OUTPUT/html"

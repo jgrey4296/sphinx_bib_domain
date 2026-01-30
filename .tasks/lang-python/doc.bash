@@ -17,24 +17,50 @@ function check () {
 subhead "[python]" "Building Sphinx"
 check
 
-SPHINX_OUT="$POLYGLOT_DOCS/sphinx"
+function main () {
+    declare -a sphinx_args=()
+    builder="${POLYGLOT_SPHINX_BUILDER:-html}"
+    conf="$POLYGLOT_SPHINX_CONF_DIR"
+    out="$POLYGLOT_TEMP/site"
+    doctrees="$POLYGLOT_TEMP/doctrees"
+    logs="$POLYGLOT_TEMP/logs"
+    src="$POLYGLOT_SRC"
 
-echo -e "
-- config location  : ${POLYGLOT_SPHINX_CONF_DIR}
-- out location     : ${SPHINX_OUT}
-- builder          : ${SPHINX_BUILDER:-html}
+    fname=$(basename "${BASH_SOURCE[0]}")
+
+    # Parse args:
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --fresh)
+                echo "- using a fresh environment for sphinx"
+                sphinx_args+=("--fresh-env")
+                ;;
+            --all)
+                echo "- writing all files"
+                sphinx_args+=("--write-all")
+                ;;
+            --builder=*)
+                IFS="=" read -ra KEYVAL <<< "$1"
+                builder="${KEYVAL[1]}"
+                ;;
+            *) ;;
+        esac
+        shift
+    done
+
+    sphinx_args+=("--builder" "$builder")
+
+    echo -e "
+- config location  : $conf
+- out location     : $out
+- builder          : $builder
 "
 
-[[ -d "${SPHINX_OUT}" ]] && rm -r "${SPHINX_OUT}"
+    uv run sphinx-build "${sphinx_args[@]}" \
+        --conf-dir "$conf" \
+        --doctree-dir "$doctrees" \
+        --warning-file "$logs/sphinx.log" \
+        "$src" "$out"
+}
 
-( uv run --frozen sphinx-build \
-    --verbose \
-    --write-all \
-    --fresh-env \
-    --conf-dir "$POLYGLOT_SPHINX_CONF_DIR" \
-    --doctree-dir "$SPHINX_OUT/.doctrees" \
-    --warning-file "$LOG_DIR/sphinx.log" \
-    --builder "${SPHINX_BUILDER:-html}" \
-    "$SRC_DIR" \
-    "$SPHINX_OUT"
-  ) || fail "Sphinx Failed"
+main "$@"
