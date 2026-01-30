@@ -75,4 +75,3 @@ class AuthorRole(XRefRole):
         # log("Tagging: {} in {}", self.title, self.env.docname)
         nodes, msgs = self.create_xref_node()
         return nodes, msgs
-

@@ -104,4 +104,3 @@ class JournalIndex(Index):
                 content[letter].append(IndexEntry(name, 2, obj[2], obj[3], '', '', ''))
         else:
             return sorted(content.items()), collapse
-

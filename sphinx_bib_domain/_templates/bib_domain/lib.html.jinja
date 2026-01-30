@@ -6,12 +6,12 @@
   {% if entries  %}
 
     <h1>{{ title }}</h1>
-    
-    {% for entry in entries %} 
+
+    {% for entry in entries %}
       {{ entryT.Entry(entry) }}
-      
+
     {% endfor %}
-    
+
   {% else %}
 
     {{ body }}
