@@ -58,3 +58,7 @@ def setup(app):
     # absolute or relative to templates_path
     app.add_config_value("bib_domain_split_index", True, "html", bool)
     app.add_config_value("bib_domain_entries_to_context", False, "html", bool)
+    # TODO:
+    app.add_config_value("bib_domain_active_blocks", None, list)
+    app.add_config_value("bib_domain_template_prefix", "bib_domain", "html", str)
+    app.add_config_value("bib_domain_template_suffix", ".rst.jinja", "html", str)

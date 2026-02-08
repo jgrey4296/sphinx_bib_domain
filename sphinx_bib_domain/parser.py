@@ -97,19 +97,21 @@ class BibtexParser(SphinxParser):
         super().__init__(*args, **kwargs)
         self._stack = self.build_stack()
         self.reader = Reader(self._stack)
-        self._templates = {}
-        self._templates.update(DEFAULT_TEMPLATES)
-
 
     @override
     def set_application(self, app) -> None:
         super().set_application(app)
         template_dirs = [pl.Path(x) for x in self.config.templates_path]
         template_dirs.append(TEMPLATES_DIR)
+        active_blocks = self.config.bib_domain_active_blocks or []
+        template_prefix = self.config.bib_domain_template_prefix
+        template_suffix = self.config.bib_domain_template_suffix
         self.writer = JinjaWriter(self._stack,
-                                  templates=template_dirs,
+                                  active_blocks=active_blocks,
+                                  loaders=template_dirs,
+                                  prefix=template_prefix,
+                                  suffix=template_suffix,
                                   )
-        self.writer.update_templates(self._templates)
 
     def build_stack(self) -> API.PairStack_p:
         """ Make the parse/write stack for bibtex """
