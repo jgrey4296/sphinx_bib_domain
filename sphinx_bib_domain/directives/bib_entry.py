@@ -119,9 +119,9 @@ class BibEntryDirective(ObjectDescription):
     def handle_signature(self, sig:str, signode:addnodes.desc_signature) -> str:
         """ parses the signature and passes the name and type on """
         if signode['is_multiline']:
-                signode += addnodes.desc_signature_line('', sig)
+            signode += addnodes.desc_signature_line(sig, "", addnodes.desc_name(text=sig))
         else:
-                signode += addnodes.desc_name(text=sig)
+            signode += addnodes.desc_name(text=sig)
         return sig
 
     def add_target_and_index(self, name_cls, sig, signode):
