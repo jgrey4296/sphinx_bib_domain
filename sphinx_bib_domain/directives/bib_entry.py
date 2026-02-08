@@ -149,7 +149,7 @@ class BibEntryDirective(ObjectDescription):
                 case _:
                     pass
 
-    def before_content(self):
+    def before_content(self) -> None:
         """ Set the content to be rendered from the options passed in """
         adapted                        = []
         title, authors, tags, crossref = "", "", "", ""
@@ -199,8 +199,8 @@ class BibEntryDirective(ObjectDescription):
                 case x:
                     adapted.append(f"| {x.title()}: {y}")
 
-        label  = f".. _{self.arguments[0]}:\n\n"
-        key    = f"| *Key*: {self.arguments[0]}"
+
+
         # Ensure title and authors are first
         # and tags + crossref are last
         if doi:
