@@ -68,20 +68,7 @@ sphlog = getSphinxLogger(__name__)
 ##-- end logging
 
 # Vars:
-DEFAULT_TEMPLATES             : Final[dict] = {
-    "lib"                    : "bib_domain/lib.rst.jinja",
-    "header"                 : "bib_domain/header.rst.jinja",
-    "entry"                  : "bib_domain/entry.rst.jinja",
-    "footer"                 : "bib_domain/footer.rst.jinja",
-    "preamble"               : "bib_domain/preamble.rst.jinja",
-    "string"                 : "bib_domain/string.rst.jinja",
-    "impl_comment"           : "bib_domain/impl_comment.rst.jinja",
-    "expl_comment"           : "bib_domain/expl_comment.rst.jinja",
-    "failed_block"           : "bib_domain/failed_block.rst.jinja",
-    "meta_block"             : "bib_domain/meta_block.rst.jinja",
-    "middleware_error_block" : "bib_domain/middleware_error_block.rst.jinja",
-    "parsing_failed_block"   : "bib_domain/parsing_failed_block.rst.jinja",
-}
+
 # Body:
 
 class BibtexParser(SphinxParser):
