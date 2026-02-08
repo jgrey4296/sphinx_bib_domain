@@ -67,7 +67,7 @@ wheels = [
 
 [[package]]
 name = "bibtex-bibble"
-version = "0.4.0"
+version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bibtexparser" },
@@ -81,9 +81,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "waybackpy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5b/7a/c6a1a9dbdedbf4038c89c0505636f401b281cfbaf68fc9fc988a806722fa/bibtex_bibble-0.4.0.tar.gz", hash = "sha256:cff7902e77cab18815a31eab8d82a276248aa76644b497691e3f561d42e6d486", size = 42563, upload-time = "2026-01-25T23:42:52.69Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/59/fa/5d6a955818c6ea472a174ced1437816e256828ecbb393e16875865003dd2/bibtex_bibble-0.4.1.tar.gz", hash = "sha256:02fcdfeb85d6e5c15baf7bc52f5cc21a08f77bedbe38273a9778e4ee66bee99f", size = 42540, upload-time = "2026-02-08T15:44:40.747Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/76/f5/d2c9893cbed32ba2a5dc3f5fd4a33e4cd2304dd1554c2c9962cbb0802976/bibtex_bibble-0.4.0-py3-none-any.whl", hash = "sha256:efd7f0c33aced124ff26e636f7488d785874bfbee67253507e28c0b010b02a73", size = 90272, upload-time = "2026-01-25T23:42:51.093Z" },
+    { url = "https://files.pythonhosted.org/packages/cc/39/a81cb646cae6cfa49d6a79946723251a7a1efd30bc6423d640d8d5ade48e/bibtex_bibble-0.4.1-py3-none-any.whl", hash = "sha256:ea4b1270155118c90f066135b0b19991e7f10c9987d7fc86265cb68fd0def388", size = 90317, upload-time = "2026-02-08T15:44:39.299Z" },
 ]
 
 [[package]]
@@ -1259,7 +1259,7 @@ wheels = [
 
 [[package]]
 name = "sphinx-bib-domain"
-version = "0.2.0"
+version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "bibtex-bibble" },
@@ -1297,7 +1297,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bibtex-bibble", specifier = ">=0.4.0" },
+    { name = "bibtex-bibble", specifier = ">=0.4.1" },
     { name = "docutils", specifier = ">=0.21.2" },
     { name = "jgdv", specifier = ">=1.0.1" },
     { name = "sphinx", specifier = ">=8.2.3" },
