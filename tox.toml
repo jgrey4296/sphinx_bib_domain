@@ -39,14 +39,14 @@ set_env.PKGNAME      = {replace="env", name="PKGNAME", default="sphinx_bib_domai
 #     "{[vals]package}"],
 # ]
 
-# [env.test]
-# description   = "run tests"
-# skip_install  = false
-# commands      = [
-#     ["uv", "run", "pytest",
-#     { replace="posargs", default=["./sphinx_bib_domain"], extend=true },
-#     ],
-# ]
+[env.test]
+description   = "run tests"
+skip_install  = false
+commands      = [
+    ["uv", "run", "pytest",
+    { replace="posargs", default=["./sphinx_bib_domain"], extend=true },
+    ],
+]
 
 # [env.test-cov]
 # description = "Generate test coverage report"
