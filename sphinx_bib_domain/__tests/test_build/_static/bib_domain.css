@@ -1,0 +1,64 @@
+/* custom.css -*- mode: CSS -*- */
+
+div.document{
+    width: 100%;
+}
+
+div.documentwrapper{
+    float: left;
+    width: 70%;
+    padding: 0;
+    margin-left: 30%;
+}
+
+div.bodywrapper {
+    margin: 0;
+}
+
+div.sphinxsidebar {
+    width: 30%;
+    left: 0px;
+    position: fixed;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+dl {
+    padding: 10px;
+}
+
+dl.bibtex { background-color: #bab2b2 !important; }
+
+dl.bibtext > dt.sig {
+    display: block !important;
+
+}
+
+dl.bibtex.entry.article> dt       { background-color: #2e8b57 !important; }
+dl.bibtex.entry.book> dt          { background-color: #6495e1 !important; }
+dl.bibtex.entry.inbook> dt        { background-color: #6495ef !important; }
+dl.bibtex.entry.proceedings> dt   { background-color: #Ee7610 important; }
+dl.bibtex.entry.inproceedings> dt { background-color: #Ee764f !important; }
+dl.bibtex.entry.report> dt        { background-color: #D02070 !important; }
+dl.bibtex.entry.techreport> dt    { background-color: #D02073 !important; }
+dl.bibtex.entry.thesis> dt        { background-color: #D0207f !important; }
+dl.bibtex.entry.standard> dt      { background-color: #64a1c2 !important; }
+dl.bibtex.entry.manual> dt        { background-color: #64a1cf !important; }
+dl.bibtex.entry.misc> dt          { background-color: #Ffe4c4 !important; }
+dl.bibtex.entry.online> dt        { background-color: #Ffe4cf !important; }
+
+dl.bibtex.entry.blog> dt          { background-color: #Ffb5c5 !important; }
+dl.bibtex.entry.booklet> dt       { background-color: #a2663c !important; }
+dl.bibtex.entry.case> dt          { background-color: #466480 !important; }
+dl.bibtex.entry.collection> dt    { background-color: #c75533 !important; }
+dl.bibtex.entry.dataset> dt       { background-color: #55f242 !important; }
+dl.bibtex.entry.game> dt          { background-color: #ffffff !important; }
+dl.bibtex.entry.judicial> dt      { background-color: #22625c !important; }
+dl.bibtex.entry.law > dt          { background-color: #Ffdab9 # !important; }
+dl.bibtex.entry.musicScore> dt    { background-color: #f5a95b !important; }
+dl.bibtex.entry.review> dt        { background-color: #6b8b8c !important; }
+dl.bibtex.entry.software> dt      { background-color: #aac39e !important; }
+dl.bibtex.entry.thread> dt        { background-color: #bab7b2 !important; }
+dl.bibtex.entry.unpublished> dt   { background-color: #c87d40 !important; }
+dl.bibtex.entry.video> dt         { background-color: #d1d0ce !important; }
