@@ -29,6 +29,7 @@ from docutils.statemachine import StringList # type: ignore[import-untyped]
 from sphinx.parsers import RSTParser as SphinxParser # type: ignore[import-untyped]
 from sphinx.util.logging import getLogger as getSphinxLogger
 from sphinx_bib_domain._interface import TEMPLATES_DIR
+from sphinx_bib_domain.util import JinjaRstWriter, NameMiddleware
 import bibble as BM
 import bibble._interface as API
 from bibble.io import JinjaWriter, Reader
@@ -78,12 +79,14 @@ class BibtexParser(SphinxParser):
     supported : tuple[str, ...] = ("bib", "bibtex")
     _stack : API.PairStack_p
     reader : Reader
-    writer : JinjaWriter
+    writer : Maybe[JinjaWriter]
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._stack = self.build_stack()
         self.reader = Reader(self._stack)
+        self.writer = None
+
 
     @override
     def set_application(self, app) -> None:
@@ -93,7 +96,7 @@ class BibtexParser(SphinxParser):
         active_blocks = self.config.bib_domain_active_blocks or []
         template_prefix = self.config.bib_domain_template_prefix
         template_suffix = self.config.bib_domain_template_suffix
-        self.writer = JinjaWriter(self._stack,
+        self.writer = JinjaRstWriter(self._stack,
                                   active_blocks=active_blocks,
                                   loaders=template_dirs,
                                   prefix=template_prefix,
@@ -106,7 +109,7 @@ class BibtexParser(SphinxParser):
         extra = BM.metadata.DataInsertMW()
         stack.add(read=[extra])
         stack.add(read=[BM.bidi.BraceWrapper()])
-        stack.add(read=[BM.bidi.BidiNames(authors=True, parts=False)])
+        stack.add(read=[NameMiddleware(authors=True, parts=False)])
         stack.add(read=[BM.failure.DuplicateKeyHandler()],
                   write=[BM.failure.FailureHandler()])
         stack.add(write=[extra])

@@ -1,0 +1,9 @@
+{# article.rst.jinja -*- mode: jinja2 -*- #}
+{% extends "bib_domain/rst/entry.jinja" %}
+
+{% block body %}
+{% if "note" in entry %}
+  *Note*: {{ entry.note.value }}
+{% endif %}
+
+{% endblock body %}

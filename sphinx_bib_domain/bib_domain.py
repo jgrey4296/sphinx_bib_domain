@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 """
 
+https://www.sphinx-doc.org/en/master/extdev/domainapi.html#sphinx.domains.Domain
 """
 # mypy: disable-error-code="import-untyped, attr-defined"
 # Imports:
@@ -82,34 +83,31 @@ logging = logmod.getLogger(__name__)
 sphlog = getSphinxLogger(__name__)
 ##-- end logging
 
-class BibTexDomain(Domain):
-    """ Custom Domain for sphixn
-    register with app.add_domain(StandardDomain)
-    """
-    name                  : str                                = API.DOMAIN_NAME
-    label                 : str                                = API.DOMAIN_NAME
-    data_version          : int                                = 0
-    # directives, roles, indices to be registered rather than in setup:
-    directives            : dict[str,type[Directive]]
-    roles                 : dict[str, Role]
-    indices               : list[type[Index]]
-    _last_signature       : Maybe[str]
-    # initial data to copy to env.domaindata[domain_name]
-    _virtual_names        : dict[str, tuple[str, str]]
-    ##--|
-    _static_virtual_names : ClassVar[dict]       = {}
+NEW_OBJ_TYPES : Final[list[type]] = []
 
-    _new_roles            : ClassVar[list[type]] = [ roles.TagRole, roles.DOIRole,
-                                                     roles.AuthorRole, roles.JournalRole,
-                                                     roles.PublisherRole, roles.SeriesRole,
-                                                     roles.InstitutionRole]
-    _new_indices          : ClassVar[list[type]] = [indices.TagIndex,
-                                                    indices.AuthorIndex,
-                                                    indices.PublisherIndex,
-                                                    indices.JournalIndex,
-                                                    indices.InstitutionIndex,
-                                                    indices.SeriesIndex]
-    initial_data : ClassVar[dict[str, dict]] = {
+NEW_DIRECTIVES : Final[dict[str, type]] = {
+    "entry" : BibEntryDirective,
+    }
+NEW_INDICES : Final[list[type[Index]]] = [
+    indices.TagIndex,
+    indices.AuthorIndex,
+    indices.PublisherIndex,
+    indices.JournalIndex,
+    indices.InstitutionIndex,
+    indices.SeriesIndex,
+]
+NEW_ROLES : Final[list[type]] = [
+    roles.TagRole, roles.DOIRole,
+    roles.AuthorRole, roles.JournalRole,
+    roles.PublisherRole, roles.SeriesRole,
+    roles.InstitutionRole,
+]
+
+def make_index_registery_pair(domain, x) -> tuple[str, tuple]:
+        return (f"{domain.name}-{x.name}", x.localname)
+
+def make_init_data () -> dict[str, dict]:
+    return {
         'entries'       : {},
         'tags'          : defaultdict(list),
         'authors'       : defaultdict(list),
@@ -119,18 +117,42 @@ class BibTexDomain(Domain):
         'series'        : defaultdict(list),
     }
 
+# --------------------------------------------------
+
+class BibTexDomain(Domain):
+    """ Domain for sphinx
+
+
+    register with app.add_domain(StandardDomain)
+    modifies sphinx.domains.std.StandardDomain._virtual_doc_names
+    """
+    name                  : str                                = API.DOMAIN_NAME
+    label                 : str                                = API.DOMAIN_NAME
+    data_version          : int                                = 0
+
+    # directives, roles, indices to be registered at init
+    directives             : dict[str,type[Directive]]
+    indices                : list[type[Index]]
+    roles                  : dict[str, Role]
+    object_types           : dict[str, ObjType]
+
+    initial_data           : ClassVar[dict[str, dict]]  = make_init_data()
+    _static_virtual_names  : ClassVar[dict]             = {}
+    _last_signature        : Maybe[str]
+    _virtual_names         : dict[str, tuple[str, str]]
+
     def __init__(self, env:BuildEnvironment) -> None:
         super().__init__(env)
 
-        self._last_signature = None
+        self._last_signature  = None
 
-        # directives, roles, indices to be registered rather than in setup:
-        self.directives   = {'entry'        : BibEntryDirective}
-        self.indices        = BibTexDomain._new_indices[:]
-        self.roles        = {'ref'          : XRefRole()}
-        self.roles.update({x.reftype : x() for x in BibTexDomain._new_roles})
+        self.directives       = {**NEW_DIRECTIVES}
+        self.indices          = NEW_INDICES[:]
+        self.roles            = {'ref'          : XRefRole()}
 
-        self._virtual_names = {x.shortname : (f"{self.name}-{x.name}", x.localname) for x in self.indices}
+        self.roles.update({x.reftype        : x() for x in NEW_ROLES})
+
+        self._virtual_names = {x.shortname  : make_index_registery_pair(self, x) for x in self.indices}
         self._virtual_names.update(self._static_virtual_names)
 
         # Add any virtual indices to the standard domain:
@@ -153,6 +175,7 @@ class BibTexDomain(Domain):
         vname_key : str
         first_letter = target[0].upper()
         cap_target   = "cap-{}".format(target[0].upper())
+        # TODO make this an enum?
         match typ:
             case "entry" | "ref":
                  entry = self.data['entries'][API.fsig(target)]

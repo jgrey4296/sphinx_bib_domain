@@ -1,6 +1,4 @@
 {# Jina Template for a Bibtex Library File Export #}
-.. -*- mode: ReST -*-
-
 .. _{{ title }}:
 
 {{ title|length * "=" }}
@@ -11,6 +9,6 @@
 {#    :class: bib_entries #}
 {#    :local: #}
 
-
-See 'View Page Source' in the top right hand corner of the page
+There are {{ library.entries|count }} entries.
+'View Page Source' in the top right hand corner of the page
 for the raw bibtex.

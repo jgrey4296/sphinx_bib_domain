@@ -1,0 +1,28 @@
+{# Jinja Template for Bibtex -> rst export -#}
+{% set roles = [
+"author", "editor", "title", "subtitle", "year",
+"booktitle", "journal", "publisher", "institution",
+"series", "number", "volume", "chapter", "country",
+"short_parties",
+"edition", "edition_year",
+"isbn", "identifier", "tags", "url", "doi",
+] -%}
+
+{% block header %}{% endblock header %}
+
+.. bibtex:entry:: {{ key }}
+  :etype: {{ entry_type }}
+  {% for key,val in entry|items %}
+    {%   if key == "author" or key == "editor" %}
+  {{ (':' ~ key ~ ':  ' ~ val.value|join(" | ")) }}
+    {%   elif key in roles and val.value is ne("") %}
+  {{ (':' ~ key ~ ':  ' ~ val.value) }}
+    {%   endif %}
+  {% endfor %}
+
+  {% block body %} {% endblock body %}
+
+
+{% block footer %}
+----
+{% endblock footer %}

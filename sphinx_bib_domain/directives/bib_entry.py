@@ -74,43 +74,46 @@ sphlog   = getSphinxLogger(__name__)
 ##-- end logging
 
 class BibEntryDirective(ObjectDescription):
-    """ Custom Directive for Bibtex Entries.
+    """ Directive for Bibtex Entries.
+
     Note: use 'within' for volume, number, issue, pages.
     concat title with subtitle
 
     TODO: legal fields (status, plaintiff, defendant etc)
     """
 
-    has_content             : bool = True
-    required_arguments      : int = 1
-    option_spec             : ClassVar[OptionSpec] = {
-        'title'             : directives.unchanged_required,
-        'subtitle'          : directives.unchanged_required,
-        'year'              : directives.unchanged_required,
-        'tags'              : directives.unchanged_required,
-        'author'            : directives.unchanged,
-        'editor'            : directives.unchanged,
-        'journal'           : directives.unchanged,
-        'booktitle'         : directives.unchanged,
-        'within'            : directives.unchanged, # TODO remove this
-        "volume"            : directives.unchanged,
-        "number"            : directives.unchanged,
-        'platform'          : directives.unchanged,
-        'publisher'         : directives.unchanged,
-        'institution'       : directives.unchanged,
-        'series'            : directives.unchanged,
-        'url'               : directives.unchanged,
-        'doi'               : directives.unchanged,
-        'isbn'              : directives.unchanged,
-        'edition'           : directives.unchanged,
-        'edition_year'      : directives.unchanged,
-        'crossref'          : directives.unchanged,
-        'identifier'        : directives.unchanged,
-        # TODO              : thesis type
-        'no-index'          : directives.flag,
-        'no-index-entry'    : directives.flag,
-        'no-contents-entry' : directives.flag,
-        'no-typesetting'    : directives.flag,
+    has_content              : bool = True
+    required_arguments       : int = 1
+    option_spec              : ClassVar[OptionSpec] = {
+        'title'              : directives.unchanged_required,
+        'subtitle'           : directives.unchanged_required,
+        'year'               : directives.unchanged_required,
+        'tags'               : directives.unchanged_required,
+        "etype"              : directives.unchanged_required,
+        'author'             : directives.unchanged,
+        'editor'             : directives.unchanged,
+        'journal'            : directives.unchanged,
+        'booktitle'          : directives.unchanged,
+        "volume"             : directives.unchanged,
+        "number"             : directives.unchanged,
+        "chapter"            : directives.unchanged,
+        "country"            : directives.unchanged,
+        'platform'           : directives.unchanged,
+        'publisher'          : directives.unchanged,
+        'institution'        : directives.unchanged,
+        'series'             : directives.unchanged,
+        'url'                : directives.unchanged,
+        'doi'                : directives.unchanged,
+        'isbn'               : directives.unchanged,
+        'edition'            : directives.unchanged,
+        'edition_year'       : directives.unchanged,
+        'crossref'           : directives.unchanged,
+        'identifier'         : directives.unchanged,
+        # TODO               : thesis type
+        'no-index'           : directives.flag,
+        'no-index-entry'     : directives.flag,
+        'no-contents-entry'  : directives.flag,
+        'no-typesetting'     : directives.flag,
     }
 
     def _toc_entry_name(self, sig_node:desc_signature) -> str:
@@ -151,72 +154,13 @@ class BibEntryDirective(ObjectDescription):
 
     def before_content(self) -> None:
         """ Set the content to be rendered from the options passed in """
-        adapted                        = []
-        title, authors, tags, crossref = "", "", "", ""
-        loc, loc_details               = "", ""
-        url, doi                       = "", ""
-
-        for x,y in self.options.items():
-            match x:
-                case "subtitle" | "title" | "short_parties":
-                    pass
-                case "crossref":
-                    crossref = f"| see :ref:`{y}`"
-                case "author" | "editor":
-                    _authors = " and ".join(f":author:`{a.strip()}`" for a in y.split(" | "))
-                    eds = " (eds)." if x == "editor" else ""
-                    authors  = f"| {_authors}{eds}"
-                case "tags":
-                    tags    = ", ".join(f":tag:`{t.strip()}`" for t in y.split(","))
-                case "crossref":
-                    simple_crossref = y
-                    crossref = f"(See :ref:`{simple_crossref}`)"
-                case "edition" | "edition_year":
-                    adapted.append(f"| {y} Edition")
-                case "url":
-                    url_ = urlparse(y)
-                    url = f"| `Link <{y}>`__"
-                case "doi":
-                    doi = f"| :doi:`{y}`"
-                case "within":
-                    adapted.append(f"| in *{y}*")
-                case "journal":
-                    adapted.append(f"| in :journal:`{y}`")
-                case "series":
-                    adapted.append(f"| *Series*: :series:`{y}`")
-                case "institution":
-                    adapted.append(f"| :institution:`{y}`")
-                case "publisher":
-                    adapted.append(f"| :publisher:`{y}`")
-                case "isbn":
-                    adapted.append(f"| isbn: {y}")
-                case "booktitle":
-                    adapted.append(f"| in *{y}*")
-                case "identifier":
-                    adapted.append(f"| ID: {y}")
-                case "year":
-                    pass
-                case x:
-                    adapted.append(f"| {x.title()}: {y}")
-
-
-
-        # Ensure title and authors are first
-        # and tags + crossref are last
-        if doi:
-            adapted.append(doi)
-        if url:
-            adapted.append(url)
-        if tags:
-            adapted.append(f"| {tags}")
-
-        match crossref:
-            case None | "":
-                adapted = [authors, *adapted]
-            case _:
-                adapted = [crossref, authors, *adapted]
-
-        self.content = "\n".join(adapted)
+        sequential = []
+        sequential += self._assemble_head()
+        sequential += self._assemble_in()
+        sequential += self._assemble_misc()
+        sequential += [x for x in self.content]
+        sequential += self._assemble_foot()
+        self.content = "\n".join(sequential)
 
     def run(self) -> list[Node]:
         result : list[Node]
@@ -235,6 +179,7 @@ class BibEntryDirective(ObjectDescription):
         node['objtype']  = self.objtype
         node['classes'].append(self.domain)
         node['classes'].append(self.objtype)
+        node['classes'].append(self.options.get("etype", "misc"))
 
         # TODO break into multiple lines if too long:
         signode = addnodes.desc_signature(is_multiline=True)
@@ -266,4 +211,102 @@ class BibEntryDirective(ObjectDescription):
 
         self.after_content()
 
-        return [self.indexnode, node, nodes.transition()]
+        return [self.indexnode, node]
+
+
+    def _assemble_head(self) -> list[str]:
+        """ The first elements of an entry: the crossref, authors and editors """
+        result = []
+        if 'crossref' in self.options:
+            result.append(f"| see :ref:`{self.options['crossref']}`")
+        if 'author' in self.options:
+            authors = self.options['author']
+            _authors = " and ".join(f":author:`{a.strip()}`" for a in authors.split(" | "))
+            result.append(f"| {_authors}")
+        elif 'editor' in self.options:
+            editors = self.options['editor']
+            _eds = " and ".join(f":author:`{a.strip()}`" for a in editors.split(" | "))
+            result.append(f"| {_eds} (eds).")
+
+        return result
+
+    def _assemble_in(self) -> list[str]:
+        """ The data saying what this entry is in. """
+        result        = []
+        btitle        = self.options.get("booktitle", None)
+        chapter       = self.options.get("chapter", None)
+
+        journal       = self.options.get("journal", None)
+        volume        = self.options.get("volume", None)
+        number        = self.options.get("number", None)
+
+        series        = self.options.get("series", None)
+        institution   = self.options.get("institution", None)
+        publisher     = self.options.get("publisher", None)
+        country       = self.options.get("country", None)
+
+        if btitle: # booktitle / volume
+            temp = [f"| *In*: `{btitle}`",
+                    f"*Chapter* {chapter}" if chapter else None,
+                    f"*Volume* {volume}" if volume else None,
+                    ]
+            result.append(", ".join(x for x in temp if x is not None))
+        elif journal: # journal / volume / number
+            temp = [f"| *In*: :journal:`{journal}`",
+                    f"*Volume* {volume}" if volume else None,
+                    f"*Issue* {number}" if number else None
+                    ]
+            result.append(", ".join(x for x in temp if x is not None))
+
+        if series: # series / number
+            temp = [f"| *Series*: :series:`{series}`",
+                    f"*Number* {number}" if number else None,
+                    ]
+            result.append(", ".join(x for x in temp if x is not None))
+
+        if institution:
+            temp = [f"| *Institution*: :institution:`{institution}`",
+                    f"Country: {country}" if country else None,
+                    ]
+            result.append(", ".join(x for x in temp if x is not None))
+        if publisher:
+            result.append(f"| *Publisher*: :publisher:`{publisher}`")
+
+        return result
+
+    def _assemble_misc(self) -> list[str]:
+        """ Add in anything that doesnt fit elsewhere """
+        result        = []
+        edition       = self.options.get("edition", None)
+        eyear  = self.options.get("edition_year", None)
+        if edition and eyear:
+            result.append(f"| *Edition*: {edition}, {eyear}")
+        elif edition:
+            result.append(f"| *Edition*: {edition}")
+        elif eyear:
+            result.append(f"| *Edition Year*: {eyear}")
+
+        if 'identifier' in self.options:
+            result.append(f"| *ID*: {self.options['identifier']}")
+        if "isbn" in self.options:
+            result.append(f"| *ISBN*: {self.options['isbn']}")
+
+        return result
+
+    def _assemble_links(self) -> list[str]:
+        result = []
+        if "doi" in self.options:
+            result.append(f"| *DOI*: :doi:`{self.options['doi']}`")
+        if "url" in self.options:
+            url_ = urlparse(self.options['url'])
+            result.append(f"| *URL*: `Link <{y}>`__")
+
+        return result
+
+    def _assemble_foot(self) -> list[str]:
+        result = ["", ""]
+        if "tags" in self.options:
+            tags = self.options['tags']
+            result.append(", ".join(f":tag:`{t.strip()}`" for t in tags.split(",")))
+
+        return result

@@ -27,6 +27,8 @@ import atexit # for @atexit.register
 import faulthandler
 # ##-- end stdlib imports
 
+from sphinx.domains import ObjType
+
 # ##-- types
 # isort: off
 import abc
@@ -72,3 +74,16 @@ def anchor(sig:str) -> str:
 
 def fsig(sig:str) -> str:
     return f"{DOMAIN_NAME}.{sig}"
+
+
+#  ObjTypes --------------------------------------------------
+# https://www.sphinx-doc.org/en/master/extdev/domainapi.html#sphinx.domains.ObjType
+
+class EntryObjType(ObjType):
+    pass
+
+class TagObjType(ObjType):
+    pass
+
+class AuthorObjType(ObjType):
+    pass

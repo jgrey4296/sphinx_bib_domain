@@ -60,5 +60,5 @@ def setup(app):
     app.add_config_value("bib_domain_entries_to_context", False, "html", bool)
     # TODO:
     app.add_config_value("bib_domain_active_blocks", None, list)
-    app.add_config_value("bib_domain_template_prefix", "bib_domain", "html", str)
-    app.add_config_value("bib_domain_template_suffix", ".rst.jinja", "html", str)
+    app.add_config_value("bib_domain_template_prefix", "bib_domain/rst", "html", str)
+    app.add_config_value("bib_domain_template_suffix", ".jinja", "html", str)
