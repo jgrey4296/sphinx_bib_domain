@@ -11,3 +11,5 @@
 :temp        : .temp
 :templates   : templates
 :wiki        : wiki_
+:related     : .related
+:site        : .temp/site
