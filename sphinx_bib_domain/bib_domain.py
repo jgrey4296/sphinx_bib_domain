@@ -173,12 +173,13 @@ class BibTexDomain(Domain):
         target: target name
         """
         vname_key : str
-        first_letter = target[0].upper()
-        cap_target   = "cap-{}".format(target[0].upper())
+        first_letter  = target[0].upper()
+        cap_target    = "cap-{}".format(target[0].upper())
+        fsig          = API.fsig(target)
         # TODO make this an enum?
         match typ:
-            case "entry" | "ref":
-                 entry = self.data['entries'][API.fsig(target)]
+            case "entry" | "ref" if fsig in self.data['entries']:
+                 entry = self.data['entries'][fsig]
                  return make_refnode(builder,
                                      fromdocname,
                                      entry[2],

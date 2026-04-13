@@ -158,6 +158,7 @@ class BibEntryDirective(ObjectDescription):
         sequential += self._assemble_head()
         sequential += self._assemble_in()
         sequential += self._assemble_misc()
+        sequential += self._assemble_links()
         sequential += [x for x in self.content]
         sequential += self._assemble_foot()
         self.content = "\n".join(sequential)
@@ -298,8 +299,8 @@ class BibEntryDirective(ObjectDescription):
         if "doi" in self.options:
             result.append(f"| *DOI*: :doi:`{self.options['doi']}`")
         if "url" in self.options:
-            url_ = urlparse(self.options['url'])
-            result.append(f"| *URL*: `Link <{y}>`__")
+            url = self.options['url']
+            result.append(f"| *URL*: `Link <{url}>`__")
 
         return result
 
