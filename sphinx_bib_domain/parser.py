@@ -88,20 +88,21 @@ class BibtexParser(SphinxParser):
         self.writer = None
 
 
-    @override
-    def set_application(self, app) -> None:
-        super().set_application(app)
+    def build_writer(self) -> None:
+        if self.writer is not None:
+            return
+
         template_dirs = [pl.Path(x) for x in self.config.templates_path]
         template_dirs.append(TEMPLATES_DIR)
         active_blocks = self.config.bib_domain_active_blocks or []
         template_prefix = self.config.bib_domain_template_prefix
         template_suffix = self.config.bib_domain_template_suffix
         self.writer = JinjaRstWriter(self._stack,
-                                  active_blocks=active_blocks,
-                                  loaders=template_dirs,
-                                  prefix=template_prefix,
-                                  suffix=template_suffix,
-                                  )
+                                     active_blocks=active_blocks,
+                                     loaders=template_dirs,
+                                     prefix=template_prefix,
+                                     suffix=template_suffix,
+                                     )
 
     def build_stack(self) -> API.PairStack_p:
         """ Make the parse/write stack for bibtex """
@@ -120,6 +121,7 @@ class BibtexParser(SphinxParser):
 
         assigns the parsed bibtex library to document.raw_lib
         """
+        self.build_writer()
         doc_source  = pl.Path(document['source'])
         lib         = self.reader.read(inputstring)
         rst         = self.writer.write(lib, title=doc_source.stem)
