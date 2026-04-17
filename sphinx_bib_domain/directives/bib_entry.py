@@ -125,6 +125,7 @@ class BibEntryDirective(ObjectDescription):
             signode += addnodes.desc_signature_line(sig, "", addnodes.desc_name(text=sig))
         else:
             signode += addnodes.desc_name(text=sig)
+        signode['classes'].append(self.options.get("etype", "misc"))
         return sig
 
     def add_target_and_index(self, name_cls, sig, signode):
